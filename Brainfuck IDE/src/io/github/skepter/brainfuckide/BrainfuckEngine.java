@@ -197,7 +197,7 @@ public class BrainfuckEngine {
 			break;
 		case Token.OUTPUT:
 			// Output the short at the current index in a character.
-			outWriter.write((char) data[dataPointer]);
+//			outWriter.write((char) data[dataPointer]);
 			Main.output.setText(Main.output.getText() + (char) data[dataPointer]);
 			break;
 		case Token.INPUT:

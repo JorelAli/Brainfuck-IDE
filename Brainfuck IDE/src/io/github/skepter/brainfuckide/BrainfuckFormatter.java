@@ -1,66 +1,23 @@
 package io.github.skepter.brainfuckide;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
-
 /**
  * BrainfuckFormatter designed to format brainfuck
  */
 public class BrainfuckFormatter {
 
 	/**
-	 * The memory thats available for this brainfuck program.
-	 */
-	protected short[] data;
-
-	/**
-	 * The data pointer that points to the current index in the
-	 * {@link BrainfuckFormatter#data} memory array.
-	 */
-	protected int dataPointer = 0;
-
-	/**
 	 * The character pointer that points to the current index of the character
 	 * array of value of its file or string.
 	 */
-	protected int charPointer = 0;
-
-	/**
-	 * The {@link BrainfuckFormatter#fileReader} allows use to read from a file if
-	 * one is specified.
-	 */
-	protected BufferedReader fileReader;
-
-	/**
-	 * The {@link BrainfuckFormatter#consoleReader} allows us to read from the
-	 * console for the ',' keyword.
-	 */
-	protected InputStreamReader consoleReader;
-
-	/**
-	 * The {@link BrainfuckFormatter#outWriter} allows us to write to the console.
-	 */
-	protected OutputStream outWriter;
-
-	/**
-	 * The current line the engine is at.
-	 */
-	protected int lineCount = 0;
-
-	/**
-	 * The current column the engine is at.
-	 */
-	protected int columnCount = 0;
+	private StringBuilder formattedOutput;
+	private int indentationLevel = 0;
 
 	/**
 	 * The {@link Token} class contains tokens in brainfuck.
 	 * 
 	 * @author Fabian M.
 	 */
-	protected static class Token {
+	private static class Token {
 		public final static char NEXT = '>';
 		public final static char PREVIOUS = '<';
 		public final static char PLUS = '+';
@@ -71,166 +28,89 @@ public class BrainfuckFormatter {
 		public final static char BRACKET_RIGHT = ']';
 	}
 
-	/**
-	 * Constructs a new {@link BrainfuckFormatter} instance.
-	 * 
-	 * @param cells
-	 *            The amount of memory cells.
-	 */
-	public BrainfuckFormatter(int cells) {
-		this(cells, new PrintStream(System.out), System.in);
+	public void format() {
+		formattedOutput = new StringBuilder();
+		String str = Main.workspace.getText();
+		for (int charPointer = 0; charPointer < str.length(); charPointer++) {
+
+			/* Catches exceptions with SIOOB */
+			char next = '#';
+			try {
+				next = str.charAt(charPointer + 1);
+			} catch (Exception e) {
+			}
+
+			char prev = '#';
+			try {
+				prev = str.charAt(charPointer - 1);
+			} catch (Exception e) {
+			}
+
+			format(str.charAt(charPointer), prev, next);
+		}
+		Main.workspace.setText(formattedOutput.toString());
 	}
 
 	/**
-	 * Constructs a new {@link BrainfuckFormatter} instance.
-	 * 
-	 * @param cells
-	 *            The amount of memory cells.
-	 * @param out
-	 *            The outputstream of this program.
+	 * Formats the chars
 	 */
-	public BrainfuckFormatter(int cells, OutputStream out) {
-		this(cells, out, System.in);
-	}
-
-	/**
-	 * Constructs a new {@link BrainfuckFormatter} instance.
-	 * 
-	 * @param cells
-	 *            The amount of memory cells.
-	 * @param out
-	 *            The printstream of this program.
-	 * @param in
-	 *            The outputstream of this program.
-	 */
-	public BrainfuckFormatter(int cells, OutputStream out, InputStream in) {
-		initiate(cells);
-		outWriter = out;
-		consoleReader = new InputStreamReader(in);
-	}
-
-	/**
-	 * Initiate this instance.
-	 */
-	protected void initiate(int cells) {
-		data = new short[cells];
-		dataPointer = 0;
-		charPointer = 0;
-	}
-
-	/**
-	 * Interprets the given string.
-	 * 
-	 * @param str
-	 *            The string to interpret.
-	 * @throws Exception
-	 */
-	public void interpret(String str) throws Exception {
-		for (; charPointer < str.length(); charPointer++)
-			interpret(str.charAt(charPointer), str.toCharArray());
-		initiate(data.length);
-	}
-
-	public void reset() {
-		Main.setStatusLabel(dataPointer, false);
-		initiate(data.length);
-	}
-
-	public void interpretWithoutReset(String str) throws Exception {
-		for (; charPointer < str.length(); charPointer++)
-			interpret(str.charAt(charPointer), str.toCharArray());
-	}
-
-	/**
-	 * Interprets the given char
-	 * 
-	 * @param c
-	 *            The char to interpret.
-	 * @throws Exception
-	 */
-	protected void interpret(char c, char[] chars) throws Exception {
+	private void format(char c, char prevChar, char nextChar) {
 		switch (c) {
 		case Token.NEXT:
-			// Increment the data pointer (to point to the next cell to the
-			// right).
-			if ((dataPointer + 1) > data.length) {
-				throw new Exception("Error on line " + lineCount + ", column " + columnCount + ":" + "data pointer (" + dataPointer + ") on postion " + charPointer + "" + " out of range.");
+			indent(c);
+			if (!(prevChar == Token.NEXT) || !(prevChar == Token.PREVIOUS)) {
+				formattedOutput.append("\n").append(c);
+			} else {
+				formattedOutput.append(c);
 			}
-			dataPointer++;
 			break;
 		case Token.PREVIOUS:
-			// Decrement the data pointer (to point to the next cell to the
-			// left).
-			if ((dataPointer - 1) < 0) {
-				throw new Exception("Error on line " + lineCount + ", column " + columnCount + ":" + "data pointer (" + dataPointer + ") on postion " + charPointer + " " + "negative.");
+			indent(c);
+			if (!(prevChar == Token.NEXT) || !(prevChar == Token.PREVIOUS)) {
+				formattedOutput.append("\n").append(c);
+			} else {
+				formattedOutput.append(c);
 			}
-			dataPointer--;
 			break;
 		case Token.PLUS:
-			// Increment (increase by one) the short at the data pointer.
-			/*
-			 * if ((((int) data[dataPointer]) + 1) > Integer.MAX_VALUE) { throw
-			 * new Exception("Error on line " + lineCount + ", column " +
-			 * columnCount + ":" + "short value at data pointer (" + dataPointer
-			 * + ") " + " on postion " + charPointer +
-			 * " higher than short max value."); }
-			 */
-			data[dataPointer]++;
+			indent(c);
+			if (prevChar == Token.NEXT || prevChar == Token.PREVIOUS) {
+				formattedOutput.append(" ").append(c);
+			} else {
+				formattedOutput.append(c);
+			}
 			break;
 		case Token.MINUS:
-			// Decrement (decrease by one) the short at the data pointer.
-			/*
-			 * if ((data[dataPointer] - 1) < 0) { throw new
-			 * Exception("Error on line " + lineCount + ", column " +
-			 * columnCount + ":" + "at data pointer " + dataPointer +
-			 * " on postion " + charPointer +
-			 * ": Value can not be lower than zero."); }
-			 */
-			if (data[dataPointer] == 0) {
-				data[dataPointer] = (short) 255;
+			indent(c);
+			if (prevChar == Token.NEXT || prevChar == Token.PREVIOUS) {
+				formattedOutput.append(" ").append(c);
 			} else {
-				data[dataPointer]--;
+				formattedOutput.append(c);
 			}
 			break;
 		case Token.OUTPUT:
-			// Output the short at the current index in a character.
-			outWriter.write((char) data[dataPointer]);
-			Main.output.setText(Main.output.getText() + (char) data[dataPointer]);
+			indent(c);
+			formattedOutput.append(c);
 			break;
 		case Token.INPUT:
-			// Accept one short of input, storing its value in the short at the
-			// data pointer.
-			Main.setStatusLabel(dataPointer, true);
-			int inputValue;
-			while ((inputValue = consoleReader.read()) != -1) {
-				data[dataPointer] = (short) inputValue;
-			}
-			// data[dataPointer] = (short) consoleReader.read();
+			indent(c);
+			formattedOutput.append(c);
 			break;
 		case Token.BRACKET_LEFT:
-			if (data[dataPointer] == 0) {
-				int i = 1;
-				while (i > 0) {
-					char c2 = chars[++charPointer];
-					if (c2 == Token.BRACKET_LEFT)
-						i++;
-					else if (c2 == Token.BRACKET_RIGHT)
-						i--;
-				}
-			}
+			indentationLevel++;
+			indent(c);
+			formattedOutput.append("\n").append(c);
 			break;
 		case Token.BRACKET_RIGHT:
-			int i = 1;
-			while (i > 0) {
-				char c2 = chars[--charPointer];
-				if (c2 == Token.BRACKET_LEFT)
-					i--;
-				else if (c2 == Token.BRACKET_RIGHT)
-					i++;
-			}
-			charPointer--;
+			indentationLevel--;
+			indent(c);
+			formattedOutput.append("\n").append(c);
 			break;
 		}
-		columnCount++;
+	}
+
+	private void indent(char c) {
+		for (int i = 0; i < indentationLevel; i++)
+			formattedOutput.append("  ");
 	}
 }
