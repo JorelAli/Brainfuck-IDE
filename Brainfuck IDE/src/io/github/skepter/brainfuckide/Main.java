@@ -42,6 +42,7 @@ public class Main {
 
 	private static int memory = DEFAULT_MEMORY;
 	private JTextField inputField;
+	private JTextField charInput;
 
 	/**
 	 * Launch the application.
@@ -203,17 +204,62 @@ public class Main {
 						}
 					});
 
+					/* Character code */
+					
+					JLabel characterLabel = new JLabel("Enter a character:");
+					JLabel characterCodeLabel = new JLabel("Character code:");
+
+					charInput = new JTextField();
+					charInput.addKeyListener(new KeyListener() {
+
+						@Override
+						public void keyPressed(KeyEvent arg0) {
+						}
+
+						@Override
+						public void keyReleased(KeyEvent arg0) {
+							try {
+								characterCodeLabel.setText("Character code: " + charInput.getText().getBytes()[0]);
+							} catch (Exception e) {
+								characterCodeLabel.setText("Character code:");
+							}
+						}
+
+						@Override
+						public void keyTyped(KeyEvent arg0) {
+						}
+
+					});
+					charInput.setColumns(10);
+
 					GroupLayout gl_devPanel = new GroupLayout(devPanel);
-					gl_devPanel.setHorizontalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING).addGroup(
-							gl_devPanel
-									.createSequentialGroup()
-									.addContainerGap()
+					gl_devPanel
+							.setHorizontalGroup(gl_devPanel
+									.createParallelGroup(Alignment.LEADING)
 									.addGroup(
-											gl_devPanel.createParallelGroup(Alignment.LEADING).addComponent(resetButton, GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
-													.addComponent(btnNewButton, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE).addComponent(runButton, GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)).addGap(40)
-									.addGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING).addComponent(setMemoryLabel).addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(ComponentPlacement.UNRELATED).addGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING, false).addComponent(cellCount).addComponent(inputField, GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE))
-									.addContainerGap()));
+											gl_devPanel
+													.createSequentialGroup()
+													.addContainerGap()
+													.addGroup(
+															gl_devPanel
+																	.createParallelGroup(Alignment.LEADING)
+																	.addGroup(
+																			gl_devPanel
+																					.createSequentialGroup()
+																					.addGroup(
+																							gl_devPanel.createParallelGroup(Alignment.LEADING).addComponent(resetButton, GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+																									.addComponent(btnNewButton, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+																									.addComponent(runButton, GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+																					.addGap(40)
+																					.addGroup(
+																							gl_devPanel.createParallelGroup(Alignment.TRAILING).addComponent(setMemoryLabel)
+																									.addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
+																					.addPreferredGap(ComponentPlacement.UNRELATED)
+																					.addGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING, false).addComponent(cellCount).addComponent(inputField, GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)))
+																	.addGroup(
+																			gl_devPanel.createSequentialGroup().addComponent(characterLabel).addPreferredGap(ComponentPlacement.UNRELATED)
+																					.addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addGap(18).addComponent(characterCodeLabel)))
+													.addContainerGap()));
 					gl_devPanel.setVerticalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING).addGroup(
 							gl_devPanel
 									.createSequentialGroup()
@@ -224,7 +270,13 @@ public class Main {
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addGroup(
 											gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(resetButton).addComponent(inputField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-													.addComponent(inputLabel)).addPreferredGap(ComponentPlacement.RELATED).addComponent(btnNewButton).addContainerGap(34, Short.MAX_VALUE)));
+													.addComponent(inputLabel))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btnNewButton)
+									.addPreferredGap(ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+									.addGroup(
+											gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(characterLabel).addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+													.addComponent(characterCodeLabel)).addContainerGap()));
 					devPanel.setLayout(gl_devPanel);
 
 					/* Set output */
