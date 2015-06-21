@@ -31,18 +31,20 @@ public class BrainfuckFormatter {
 	public void format() {
 		formattedOutput = new StringBuilder();
 		String str = Main.workspace.getText();
+		str = str.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", "");
+		System.out.println(str);
 		for (int charPointer = 0; charPointer < str.length(); charPointer++) {
 
 			/* Catches exceptions with SIOOB */
-			char next = '#';
-			try {
-				next = str.charAt(charPointer + 1);
-			} catch (Exception e) {
-			}
-
 			char prev = '#';
 			try {
 				prev = str.charAt(charPointer - 1);
+			} catch (Exception e) {
+			}
+
+			char next = '#';
+			try {
+				next = str.charAt(charPointer + 1);
 			} catch (Exception e) {
 			}
 
@@ -57,31 +59,19 @@ public class BrainfuckFormatter {
 	private void format(char c, char prevChar, char nextChar) {
 		switch (c) {
 		case Token.NEXT:
-			indent(c);
-			if (!(prevChar == Token.NEXT) || !(prevChar == Token.PREVIOUS)) {
-				formattedOutput.append("\n").append(c);
-			} else {
-				formattedOutput.append(c);
-			}
-			break;
 		case Token.PREVIOUS:
-			indent(c);
-			if (!(prevChar == Token.NEXT) || !(prevChar == Token.PREVIOUS)) {
-				formattedOutput.append("\n").append(c);
-			} else {
+			if(prevChar == Token.NEXT) {
+				System.out.println("NEXT");
 				formattedOutput.append(c);
+			}else if(prevChar == Token.PREVIOUS) {
+				System.out.println("PREVIOUS");
+				formattedOutput.append(c);
+			} else {
+				formattedOutput.append("\n").append(indent()).append(c);
 			}
 			break;
 		case Token.PLUS:
-			indent(c);
-			if (prevChar == Token.NEXT || prevChar == Token.PREVIOUS) {
-				formattedOutput.append(" ").append(c);
-			} else {
-				formattedOutput.append(c);
-			}
-			break;
 		case Token.MINUS:
-			indent(c);
 			if (prevChar == Token.NEXT || prevChar == Token.PREVIOUS) {
 				formattedOutput.append(" ").append(c);
 			} else {
@@ -89,28 +79,33 @@ public class BrainfuckFormatter {
 			}
 			break;
 		case Token.OUTPUT:
-			indent(c);
+			indent();
 			formattedOutput.append(c);
 			break;
 		case Token.INPUT:
-			indent(c);
+			indent();
 			formattedOutput.append(c);
 			break;
 		case Token.BRACKET_LEFT:
+			formattedOutput.append("\n");
+			indent();
+			formattedOutput.append(c);
 			indentationLevel++;
-			indent(c);
-			formattedOutput.append("\n").append(c);
+
 			break;
 		case Token.BRACKET_RIGHT:
+			formattedOutput.append("\n");
+			indent();
+			formattedOutput.append(c);
 			indentationLevel--;
-			indent(c);
-			formattedOutput.append("\n").append(c);
 			break;
 		}
 	}
 
-	private void indent(char c) {
+	private String indent() {
+		String str = "";
 		for (int i = 0; i < indentationLevel; i++)
-			formattedOutput.append("  ");
+			str = str + "  ";
+		return str;
 	}
 }
