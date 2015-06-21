@@ -3,29 +3,32 @@ package io.github.skepter.brainfuckide;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JTextArea;
+
 public class BrainfuckIntegrator {
 
 	BrainfuckEngine engine;
+	String code;
+	JTextArea output;
 
-	public BrainfuckIntegrator(BrainfuckEngine engine) {
+	public BrainfuckIntegrator(BrainfuckEngine engine, String code, JTextArea output) {
 		this.engine = engine;
+		this.code = code;
+		this.output = output;
+		
+		interpret();
+		debugInfo();
 	}
-
-	@SuppressWarnings("unused")
-	private void code() {
+	
+	public void interpret() {
 		try {
-			engine.interpretWithoutReset("++[>+<------]>+.");
-			System.out.println("");
-			// engine.interpretWithoutReset("-");
-			// engine.interpretWithoutReset("++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.");
+			engine.interpretWithoutReset(code);
 		} catch (Exception e) {
 		}
-
-		debugInfo();
 	}
 
 	private void debugInfo() {
-		System.out.println("Pointer is at: " + engine.dataPointer);
+		Main.setStatusLabel(engine.dataPointer);
 
 		/* Formats it into a nice grid */
 		StringBuilder builder = new StringBuilder();
@@ -34,6 +37,7 @@ public class BrainfuckIntegrator {
 		}
 		for (String part : getParts(builder.toString(), 48)) {
 			System.out.println(part);
+			output.setText(output.getText() + "\n" + part);
 		}
 	}
 
