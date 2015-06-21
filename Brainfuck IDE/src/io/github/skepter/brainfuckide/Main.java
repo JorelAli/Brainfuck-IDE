@@ -150,7 +150,7 @@ public class Main {
 					JButton runButton = new JButton("Run!");
 					runButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent arg0) {
-							new BrainfuckIntegrator(new BrainfuckEngine(memory, System.out, new JTextFieldInputStream(inputField)), workspace.getText(), memoryOutput);
+							new BrainfuckIntegrator(new BrainfuckEngine(memory, new JTextFieldInputStream(inputField)), workspace.getText(), memoryOutput);
 						}
 					});
 

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintStream;
 
 /**
  * The {@link BrainfuckEngine} class is an implementation of the original
@@ -81,19 +80,7 @@ public class BrainfuckEngine {
 	 *            The amount of memory cells.
 	 */
 	public BrainfuckEngine(int cells) {
-		this(cells, new PrintStream(System.out), System.in);
-	}
-
-	/**
-	 * Constructs a new {@link BrainfuckEngine} instance.
-	 * 
-	 * @param cells
-	 *            The amount of memory cells.
-	 * @param out
-	 *            The outputstream of this program.
-	 */
-	public BrainfuckEngine(int cells, OutputStream out) {
-		this(cells, out, System.in);
+		this(cells, System.in);
 	}
 
 	/**
@@ -106,9 +93,8 @@ public class BrainfuckEngine {
 	 * @param in
 	 *            The outputstream of this program.
 	 */
-	public BrainfuckEngine(int cells, OutputStream out, InputStream in) {
+	public BrainfuckEngine(int cells, InputStream in) {
 		initiate(cells);
-		outWriter = out;
 		consoleReader = new InputStreamReader(in);
 	}
 
@@ -120,25 +106,19 @@ public class BrainfuckEngine {
 		dataPointer = 0;
 		charPointer = 0;
 	}
-	
-	/**
-	 * Interprets the given string.
-	 * 
-	 * @param str
-	 *            The string to interpret.
-	 * @throws Exception
-	 */
-	public void interpret(String str) throws Exception {
-		for (; charPointer < str.length(); charPointer++)
-			interpret(str.charAt(charPointer), str.toCharArray());
-		initiate(data.length);
-	}
 
 	public void reset() {
 		Main.setStatusLabel(dataPointer, false);
 		initiate(data.length);
 	}
 
+	/**
+	 * Interprets the given string, without resetting any data
+	 * 
+	 * @param str
+	 *            The string to interpret.
+	 * @throws Exception
+	 */
 	public void interpretWithoutReset(String str) throws Exception {
 		for (; charPointer < str.length(); charPointer++)
 			interpret(str.charAt(charPointer), str.toCharArray());
@@ -197,7 +177,6 @@ public class BrainfuckEngine {
 			break;
 		case Token.OUTPUT:
 			// Output the short at the current index in a character.
-//			outWriter.write((char) data[dataPointer]);
 			Main.output.setText(Main.output.getText() + (char) data[dataPointer]);
 			break;
 		case Token.INPUT:
@@ -208,7 +187,6 @@ public class BrainfuckEngine {
 			while ((inputValue = consoleReader.read()) != -1) {
 				data[dataPointer] = (short) inputValue;
 			}
-			// data[dataPointer] = (short) consoleReader.read();
 			break;
 		case Token.BRACKET_LEFT:
 			if (data[dataPointer] == 0) {

@@ -32,7 +32,6 @@ public class BrainfuckFormatter {
 		formattedOutput = new StringBuilder();
 		String str = Main.workspace.getText();
 		str = str.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", "");
-		System.out.println(str);
 		for (int charPointer = 0; charPointer < str.length(); charPointer++) {
 
 			/* Catches exceptions with SIOOB */
@@ -61,10 +60,8 @@ public class BrainfuckFormatter {
 		case Token.NEXT:
 		case Token.PREVIOUS:
 			if(prevChar == Token.NEXT) {
-				System.out.println("NEXT");
 				formattedOutput.append(c);
 			}else if(prevChar == Token.PREVIOUS) {
-				System.out.println("PREVIOUS");
 				formattedOutput.append(c);
 			} else {
 				formattedOutput.append("\n").append(indent()).append(c);
