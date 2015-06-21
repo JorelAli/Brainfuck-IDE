@@ -155,6 +155,7 @@ public class BrainfuckEngine {
 	}
 
 	public void reset() {
+		Main.setStatusLabel(dataPointer, false);
 		initiate(data.length);
 	}
 
@@ -176,9 +177,7 @@ public class BrainfuckEngine {
 			// Increment the data pointer (to point to the next cell to the
 			// right).
 			if ((dataPointer + 1) > data.length) {
-				throw new Exception("Error on line " + lineCount + ", column "
-						+ columnCount + ":" + "data pointer (" + dataPointer
-						+ ") on postion " + charPointer + "" + " out of range.");
+				throw new Exception("Error on line " + lineCount + ", column " + columnCount + ":" + "data pointer (" + dataPointer + ") on postion " + charPointer + "" + " out of range.");
 			}
 			dataPointer++;
 			break;
@@ -186,9 +185,7 @@ public class BrainfuckEngine {
 			// Decrement the data pointer (to point to the next cell to the
 			// left).
 			if ((dataPointer - 1) < 0) {
-				throw new Exception("Error on line " + lineCount + ", column "
-						+ columnCount + ":" + "data pointer (" + dataPointer
-						+ ") on postion " + charPointer + " " + "negative.");
+				throw new Exception("Error on line " + lineCount + ", column " + columnCount + ":" + "data pointer (" + dataPointer + ") on postion " + charPointer + " " + "negative.");
 			}
 			dataPointer--;
 			break;
@@ -225,7 +222,12 @@ public class BrainfuckEngine {
 		case Token.INPUT:
 			// Accept one short of input, storing its value in the short at the
 			// data pointer.
-			data[dataPointer] = (short) consoleReader.read();
+			Main.setStatusLabel(dataPointer, true);
+			int inputValue;
+			while ((inputValue = consoleReader.read()) != -1) {
+				data[dataPointer] = (short) inputValue;
+			}
+			// data[dataPointer] = (short) consoleReader.read();
 			break;
 		case Token.BRACKET_LEFT:
 			if (data[dataPointer] == 0) {

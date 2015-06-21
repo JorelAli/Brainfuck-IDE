@@ -28,7 +28,7 @@ public class BrainfuckIntegrator {
 	}
 
 	private void debugInfo() {
-		Main.setStatusLabel(engine.dataPointer);
+		Main.setStatusLabel(engine.dataPointer, false);
 
 		/* Formats it into a nice grid */
 		StringBuilder builder = new StringBuilder();
@@ -36,7 +36,6 @@ public class BrainfuckIntegrator {
 			builder.append(String.format("%03d", s)).append(" ");
 		}
 		for (String part : getParts(builder.toString(), 48)) {
-			System.out.println(part);
 			output.setText(output.getText() + "\n" + part);
 		}
 	}

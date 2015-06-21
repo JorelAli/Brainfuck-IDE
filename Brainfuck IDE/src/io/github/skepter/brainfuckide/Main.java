@@ -40,6 +40,7 @@ public class Main {
 	private final static int DEFAULT_MEMORY = 384;
 
 	private static int memory = DEFAULT_MEMORY;
+	private JTextField inputField;
 
 	/**
 	 * Launch the application.
@@ -112,7 +113,7 @@ public class Main {
 			splitPane.setLeftComponent(leftScrollPane);
 			workspace = new JTextArea();
 			workspace.setLineWrap(true);
-			workspace.setText("Hello, World!\n++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.");
+			workspace.setText("Hello World!\n++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.");
 			leftScrollPane.setViewportView(workspace);
 
 			{
@@ -124,7 +125,7 @@ public class Main {
 
 				JSplitPane secondSplitPane = new JSplitPane();
 				secondSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-				secondSplitPane.setDividerLocation(100);
+				secondSplitPane.setDividerLocation(150);
 				splitPane.setRightComponent(secondSplitPane);
 
 				JPanel devPanel = new JPanel();
@@ -135,7 +136,7 @@ public class Main {
 				JButton runButton = new JButton("Run!");
 				runButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						new BrainfuckIntegrator(new BrainfuckEngine(memory), workspace.getText(), output);
+						new BrainfuckIntegrator(new BrainfuckEngine(memory, System.out, new JTextFieldInputStream(inputField)), workspace.getText(), output);
 					}
 				});
 
@@ -176,6 +177,11 @@ public class Main {
 
 				/* Group layout for controls */
 
+				inputField = new JTextField();
+				inputField.setColumns(10);
+
+				JLabel inputLabel = new JLabel("Input:");
+
 				GroupLayout gl_devPanel = new GroupLayout(devPanel);
 				gl_devPanel.setHorizontalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING).addGroup(
 						gl_devPanel
@@ -183,15 +189,23 @@ public class Main {
 								.addContainerGap()
 								.addGroup(
 										gl_devPanel.createParallelGroup(Alignment.TRAILING, false).addComponent(runButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(resetButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addGap(47).addComponent(setMemoryLabel).addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(cellCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addContainerGap()));
-				gl_devPanel.setVerticalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING).addGroup(
-						gl_devPanel
-								.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(runButton).addComponent(cellCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-												.addComponent(setMemoryLabel)).addPreferredGap(ComponentPlacement.RELATED).addComponent(resetButton).addContainerGap(13, Short.MAX_VALUE)));
+												.addComponent(resetButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addGap(47)
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING).addComponent(setMemoryLabel).addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING).addComponent(inputField, GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE).addComponent(cellCount, GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE))
+								.addContainerGap()));
+				gl_devPanel.setVerticalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(
+								gl_devPanel
+										.createSequentialGroup()
+										.addContainerGap()
+										.addGroup(
+												gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(runButton).addComponent(cellCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+														.addComponent(setMemoryLabel))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(
+												gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(resetButton).addComponent(inputField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+														.addComponent(inputLabel)).addContainerGap(13, Short.MAX_VALUE)));
 				devPanel.setLayout(gl_devPanel);
 				secondSplitPane.setRightComponent(output);
 
@@ -199,8 +213,12 @@ public class Main {
 		}
 
 	}
-	
-	public static void setStatusLabel(int pointer) {
-		statusLabel.setText("Memory: " + memory + ", Pointer: " + pointer);
+
+	public static void setStatusLabel(int pointer, boolean input) {
+		if (input) {
+			statusLabel.setText("Memory: " + memory + ", Pointer: " + pointer);
+		} else {
+			statusLabel.setText("Memory: " + memory + ", Pointer: " + pointer + ", Awaiting an input......");
+		}
 	}
 }
