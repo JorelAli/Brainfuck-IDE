@@ -291,9 +291,9 @@ public class Main {
 
 	public static void setStatusLabel(int pointer, boolean input) {
 		if (input) {
-			statusLabel.setText("Memory: " + memory + ", Pointer: " + pointer);
-		} else {
 			statusLabel.setText("Memory: " + memory + ", Pointer: " + pointer + ", Awaiting an input......");
+		} else {
+			statusLabel.setText("Memory: " + memory + ", Pointer: " + pointer);
 		}
 	}
 }
