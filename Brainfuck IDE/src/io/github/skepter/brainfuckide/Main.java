@@ -34,9 +34,10 @@ public class Main {
 
 	private JFrame mainFrame;
 	private JTextArea workspace;
-	private JTextArea output;
+	private JTextArea memoryOutput;
 	private JTextField cellCount;
 	private static JLabel statusLabel;
+	public static JTextArea output;
 	private final static int DEFAULT_MEMORY = 384;
 
 	private static int memory = DEFAULT_MEMORY;
@@ -98,117 +99,133 @@ public class Main {
 		mainFrame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		mainPanel.setLayout(new BorderLayout(0, 0));
 
-		output = new JTextArea();
-		output.setEditable(false);
+		memoryOutput = new JTextArea();
+		memoryOutput.setEditable(false);
 
-		/* Split pane */
+		/* Split panes */
 		{
-
-			JSplitPane splitPane = new JSplitPane();
-			mainPanel.add(splitPane, BorderLayout.CENTER);
-			splitPane.setDividerLocation(700);
-
-			JScrollPane leftScrollPane = new JScrollPane();
-			leftScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-			splitPane.setLeftComponent(leftScrollPane);
-			workspace = new JTextArea();
-			workspace.setLineWrap(true);
-			workspace.setText("Hello World!\n++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.");
-			leftScrollPane.setViewportView(workspace);
-
 			{
+				JSplitPane splitPane = new JSplitPane();
+				mainPanel.add(splitPane, BorderLayout.CENTER);
+				splitPane.setDividerLocation(700);
+				
+				/* Left split pane - workspace + output */
+				{
+					JSplitPane workspaceOutputPane = new JSplitPane();
+					JScrollPane leftScrollPane = new JScrollPane();
+					leftScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+					splitPane.setLeftComponent(workspaceOutputPane);
+					workspace = new JTextArea();
+					workspace.setLineWrap(true);
+					workspace.setText("Hello World!\n++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.");
+					leftScrollPane.setViewportView(workspace);
+					
+					workspaceOutputPane.setLeftComponent(leftScrollPane);
+					workspaceOutputPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 
-				/*
-				 * Second split pane which controls memory and stuff As well as
-				 * reset buttons, and memory output
-				 */
+					workspaceOutputPane.setDividerLocation(400);
+					JScrollPane outputPane = new JScrollPane();
+					outputPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+					output = new JTextArea();
+					outputPane.setViewportView(output);
+					
+					workspaceOutputPane.setRightComponent(outputPane);
+					
+				}
+				
+				/* Right split pane - controls + memory output */
+				{
 
-				JSplitPane secondSplitPane = new JSplitPane();
-				secondSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-				secondSplitPane.setDividerLocation(150);
-				splitPane.setRightComponent(secondSplitPane);
+					JSplitPane secondSplitPane = new JSplitPane();
+					secondSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+					secondSplitPane.setDividerLocation(150);
+					splitPane.setRightComponent(secondSplitPane);
 
-				JPanel devPanel = new JPanel();
-				devPanel.setBackground(new Color(135, 206, 250));
-				devPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Controls", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
-				secondSplitPane.setLeftComponent(devPanel);
+					JPanel devPanel = new JPanel();
+					devPanel.setBackground(new Color(135, 206, 250));
+					devPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Controls", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
+					secondSplitPane.setLeftComponent(devPanel);
 
-				JButton runButton = new JButton("Run!");
-				runButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						new BrainfuckIntegrator(new BrainfuckEngine(memory, System.out, new JTextFieldInputStream(inputField)), workspace.getText(), output);
-					}
-				});
-
-				JButton resetButton = new JButton("Reset");
-				resetButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						output.setText("");
-					}
-				});
-
-				/* Set memory section */
-
-				JLabel setMemoryLabel = new JLabel("Set memory (Cells)");
-				cellCount = new JTextField();
-				cellCount.addKeyListener(new KeyListener() {
-
-					@Override
-					public void keyPressed(KeyEvent arg0) {
-					}
-
-					@Override
-					public void keyReleased(KeyEvent arg0) {
-						try {
-							Integer.parseInt(cellCount.getText());
-							memory = Integer.parseInt(cellCount.getText());
-						} catch (Exception e) {
-							memory = DEFAULT_MEMORY;
+					JButton runButton = new JButton("Run!");
+					runButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent arg0) {
+							new BrainfuckIntegrator(new BrainfuckEngine(memory, System.out, new JTextFieldInputStream(inputField)), workspace.getText(), memoryOutput);
 						}
-						statusLabel.setText("Memory: " + memory);
-					}
+					});
 
-					@Override
-					public void keyTyped(KeyEvent arg0) {
-					}
+					JButton resetButton = new JButton("Reset");
+					resetButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							memoryOutput.setText("");
+							output.setText("");
+						}
+					});
 
-				});
-				cellCount.setColumns(10);
+					/* Set memory section */
 
-				/* Group layout for controls */
+					JLabel setMemoryLabel = new JLabel("Set memory (Cells)");
+					cellCount = new JTextField();
+					cellCount.addKeyListener(new KeyListener() {
 
-				inputField = new JTextField();
-				inputField.setColumns(10);
+						@Override
+						public void keyPressed(KeyEvent arg0) {
+						}
 
-				JLabel inputLabel = new JLabel("Input:");
+						@Override
+						public void keyReleased(KeyEvent arg0) {
+							try {
+								Integer.parseInt(cellCount.getText());
+								memory = Integer.parseInt(cellCount.getText());
+							} catch (Exception e) {
+								memory = DEFAULT_MEMORY;
+							}
+							statusLabel.setText("Memory: " + memory);
+						}
 
-				GroupLayout gl_devPanel = new GroupLayout(devPanel);
-				gl_devPanel.setHorizontalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING).addGroup(
-						gl_devPanel
-								.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										gl_devPanel.createParallelGroup(Alignment.TRAILING, false).addComponent(runButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(resetButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addGap(47)
-								.addGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING).addComponent(setMemoryLabel).addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING).addComponent(inputField, GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE).addComponent(cellCount, GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE))
-								.addContainerGap()));
-				gl_devPanel.setVerticalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								gl_devPanel
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(runButton).addComponent(cellCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-														.addComponent(setMemoryLabel))
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addGroup(
-												gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(resetButton).addComponent(inputField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-														.addComponent(inputLabel)).addContainerGap(13, Short.MAX_VALUE)));
-				devPanel.setLayout(gl_devPanel);
-				secondSplitPane.setRightComponent(output);
+						@Override
+						public void keyTyped(KeyEvent arg0) {
+						}
 
+					});
+					cellCount.setColumns(10);
+
+					/* Group layout for controls */
+
+					inputField = new JTextField();
+					inputField.setColumns(10);
+
+					JLabel inputLabel = new JLabel("Input:");
+
+					GroupLayout gl_devPanel = new GroupLayout(devPanel);
+					gl_devPanel.setHorizontalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING).addGroup(
+							gl_devPanel
+									.createSequentialGroup()
+									.addContainerGap()
+									.addGroup(
+											gl_devPanel.createParallelGroup(Alignment.TRAILING, false).addComponent(runButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+													.addComponent(resetButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addGap(47)
+									.addGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING).addComponent(setMemoryLabel).addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING).addComponent(inputField, GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE).addComponent(cellCount, GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE))
+									.addContainerGap()));
+					gl_devPanel.setVerticalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING).addGroup(
+							gl_devPanel
+									.createSequentialGroup()
+									.addContainerGap()
+									.addGroup(
+											gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(runButton).addComponent(cellCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+													.addComponent(setMemoryLabel))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(
+											gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(resetButton).addComponent(inputField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+													.addComponent(inputLabel)).addContainerGap(13, Short.MAX_VALUE)));
+					devPanel.setLayout(gl_devPanel);
+
+					/* Set output */
+
+					secondSplitPane.setRightComponent(memoryOutput);
+
+				}
 			}
 		}
 
