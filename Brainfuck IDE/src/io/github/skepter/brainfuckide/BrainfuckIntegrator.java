@@ -15,11 +15,11 @@ public class BrainfuckIntegrator {
 		this.engine = engine;
 		this.code = code;
 		this.memoryOutput = memoryOutput;
-		
+
 		interpret();
 		debugInfo();
 	}
-	
+
 	public void interpret() {
 		try {
 			engine.interpretWithoutReset(code);
@@ -36,7 +36,11 @@ public class BrainfuckIntegrator {
 			builder.append(String.format("%03d", s)).append(" ");
 		}
 		for (String part : getParts(builder.toString(), 48)) {
-			memoryOutput.setText(memoryOutput.getText() + "\n" + part);
+			if (!(memoryOutput.getText().equals("")))
+				memoryOutput.setText(memoryOutput.getText() + "\n" + part);
+			else
+				memoryOutput.setText(part);
+			memoryOutput.setCaretPosition(0);
 		}
 	}
 

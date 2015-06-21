@@ -100,7 +100,7 @@ public class Main {
 		mainFrame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		mainPanel.setLayout(new BorderLayout(0, 0));
 
-		memoryOutput = new JTextArea();
+		memoryOutput = new JTextArea("");
 		memoryOutput.setEditable(false);
 
 		/* Split panes */
@@ -205,7 +205,7 @@ public class Main {
 					});
 
 					/* Character code */
-					
+
 					JLabel characterLabel = new JLabel("Enter a character:");
 					JLabel characterCodeLabel = new JLabel("Character code:");
 
@@ -280,8 +280,11 @@ public class Main {
 					devPanel.setLayout(gl_devPanel);
 
 					/* Set output */
+					JScrollPane memoryOutputScrollPane = new JScrollPane();
+					memoryOutputScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+					memoryOutputScrollPane.setViewportView(memoryOutput);
 
-					secondSplitPane.setRightComponent(memoryOutput);
+					secondSplitPane.setRightComponent(memoryOutputScrollPane);
 
 				}
 			}

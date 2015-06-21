@@ -50,6 +50,7 @@ public class BrainfuckFormatter {
 			format(str.charAt(charPointer), prev, next);
 		}
 		Main.workspace.setText(formattedOutput.toString());
+		Main.workspace.setCaretPosition(0);
 	}
 
 	/**
