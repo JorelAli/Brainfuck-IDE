@@ -1,10 +1,15 @@
 package io.github.skepter.brainfuckide;
 
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JTextPane;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 /**
  * Brainfuck IDE designed to run and debug Brainfuck code Extra credit to Fabian
@@ -15,8 +20,8 @@ import javax.swing.JFrame;
  */
 public class Main {
 
-	private JFrame frame;
-	private BrainfuckEngine engine;
+	private JFrame mainFrame;
+	private JTextPane workspace;
 
 	/**
 	 * Launch the application.
@@ -26,7 +31,7 @@ public class Main {
 			public void run() {
 				try {
 					Main window = new Main();
-					window.frame.setVisible(true);
+					window.mainFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -45,43 +50,33 @@ public class Main {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		engine = new BrainfuckEngine(500);
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainFrame = new JFrame();
+		mainFrame.setTitle("Brainfuck IDE");
+		mainFrame.setBounds(100, 100, 750, 550);
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		try {
-			engine.interpretWithoutReset("++[>+<------]>+.");
-			System.out.println("");
-			// engine.interpretWithoutReset("-");
-			// engine.interpretWithoutReset("++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.");
-		} catch (Exception e) {
-		}
+		JPanel mainPanel = new JPanel();
+		mainFrame.getContentPane().add(mainPanel, BorderLayout.CENTER);
+		mainPanel.setLayout(new BorderLayout(0, 0));
 
-		debugInfo();
-
-	}
-
-	private void debugInfo() {
-		System.out.println("Pointer is at: " + engine.dataPointer);
+		JSplitPane splitPane = new JSplitPane();
+		mainPanel.add(splitPane, BorderLayout.CENTER);
+		splitPane.setDividerLocation(400);
 		
-		/* Formats it into a nice grid */
-		StringBuilder builder = new StringBuilder();
-		for (short s : engine.data) {
-			builder.append(String.format("%03d", s)).append(" ");
-		}
-		for (String part : getParts(builder.toString(), 48)) {
-			System.out.println(part);
-		}
-	}
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		splitPane.setLeftComponent(scrollPane);
+		workspace = new JTextPane();
+		scrollPane.setViewportView(workspace);
 
-	private List<String> getParts(String string, int partitionSize) {
-		List<String> parts = new ArrayList<String>();
-		int len = string.length();
-		for (int i = 0; i < len; i += partitionSize) {
-			parts.add(string.substring(i, Math.min(len, i + partitionSize)));
-		}
-		return parts;
+
+		JPanel statusBar = new JPanel();
+		mainFrame.getContentPane().add(statusBar, BorderLayout.SOUTH);
+		statusBar.setLayout(new BorderLayout(0, 0));
+
+		JLabel label = new JLabel("New label");
+		statusBar.add(label, BorderLayout.NORTH);
+
 	}
 
 }
