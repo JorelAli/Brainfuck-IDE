@@ -7,12 +7,9 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 /**
- * The {@link BrainfuckEngine} class is an implementation of the original
- * brainfuck language.
- * 
- * @author Fabian M.
+ * BrainfuckFormatter designed to format brainfuck
  */
-public class BrainfuckEngine {
+public class BrainfuckFormatter {
 
 	/**
 	 * The memory thats available for this brainfuck program.
@@ -21,7 +18,7 @@ public class BrainfuckEngine {
 
 	/**
 	 * The data pointer that points to the current index in the
-	 * {@link BrainfuckEngine#data} memory array.
+	 * {@link BrainfuckFormatter#data} memory array.
 	 */
 	protected int dataPointer = 0;
 
@@ -32,19 +29,19 @@ public class BrainfuckEngine {
 	protected int charPointer = 0;
 
 	/**
-	 * The {@link BrainfuckEngine#fileReader} allows use to read from a file if
+	 * The {@link BrainfuckFormatter#fileReader} allows use to read from a file if
 	 * one is specified.
 	 */
 	protected BufferedReader fileReader;
 
 	/**
-	 * The {@link BrainfuckEngine#consoleReader} allows us to read from the
+	 * The {@link BrainfuckFormatter#consoleReader} allows us to read from the
 	 * console for the ',' keyword.
 	 */
 	protected InputStreamReader consoleReader;
 
 	/**
-	 * The {@link BrainfuckEngine#outWriter} allows us to write to the console.
+	 * The {@link BrainfuckFormatter#outWriter} allows us to write to the console.
 	 */
 	protected OutputStream outWriter;
 
@@ -75,29 +72,29 @@ public class BrainfuckEngine {
 	}
 
 	/**
-	 * Constructs a new {@link BrainfuckEngine} instance.
+	 * Constructs a new {@link BrainfuckFormatter} instance.
 	 * 
 	 * @param cells
 	 *            The amount of memory cells.
 	 */
-	public BrainfuckEngine(int cells) {
+	public BrainfuckFormatter(int cells) {
 		this(cells, new PrintStream(System.out), System.in);
 	}
 
 	/**
-	 * Constructs a new {@link BrainfuckEngine} instance.
+	 * Constructs a new {@link BrainfuckFormatter} instance.
 	 * 
 	 * @param cells
 	 *            The amount of memory cells.
 	 * @param out
 	 *            The outputstream of this program.
 	 */
-	public BrainfuckEngine(int cells, OutputStream out) {
+	public BrainfuckFormatter(int cells, OutputStream out) {
 		this(cells, out, System.in);
 	}
 
 	/**
-	 * Constructs a new {@link BrainfuckEngine} instance.
+	 * Constructs a new {@link BrainfuckFormatter} instance.
 	 * 
 	 * @param cells
 	 *            The amount of memory cells.
@@ -106,7 +103,7 @@ public class BrainfuckEngine {
 	 * @param in
 	 *            The outputstream of this program.
 	 */
-	public BrainfuckEngine(int cells, OutputStream out, InputStream in) {
+	public BrainfuckFormatter(int cells, OutputStream out, InputStream in) {
 		initiate(cells);
 		outWriter = out;
 		consoleReader = new InputStreamReader(in);
@@ -120,7 +117,7 @@ public class BrainfuckEngine {
 		dataPointer = 0;
 		charPointer = 0;
 	}
-	
+
 	/**
 	 * Interprets the given string.
 	 * 

@@ -9,12 +9,12 @@ public class BrainfuckIntegrator {
 
 	BrainfuckEngine engine;
 	String code;
-	JTextArea output;
+	JTextArea memoryOutput;
 
-	public BrainfuckIntegrator(BrainfuckEngine engine, String code, JTextArea output) {
+	public BrainfuckIntegrator(BrainfuckEngine engine, String code, JTextArea memoryOutput) {
 		this.engine = engine;
 		this.code = code;
-		this.output = output;
+		this.memoryOutput = memoryOutput;
 		
 		interpret();
 		debugInfo();
@@ -36,7 +36,7 @@ public class BrainfuckIntegrator {
 			builder.append(String.format("%03d", s)).append(" ");
 		}
 		for (String part : getParts(builder.toString(), 48)) {
-			output.setText(output.getText() + "\n" + part);
+			memoryOutput.setText(memoryOutput.getText() + "\n" + part);
 		}
 	}
 

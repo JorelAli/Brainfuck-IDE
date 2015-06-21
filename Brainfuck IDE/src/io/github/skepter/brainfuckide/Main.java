@@ -33,7 +33,7 @@ import javax.swing.border.TitledBorder;
 public class Main {
 
 	private JFrame mainFrame;
-	private JTextArea workspace;
+	private static JTextArea workspace;
 	private JTextArea memoryOutput;
 	private JTextField cellCount;
 	private static JLabel statusLabel;
@@ -108,7 +108,7 @@ public class Main {
 				JSplitPane splitPane = new JSplitPane();
 				mainPanel.add(splitPane, BorderLayout.CENTER);
 				splitPane.setDividerLocation(700);
-				
+
 				/* Left split pane - workspace + output */
 				{
 					JSplitPane workspaceOutputPane = new JSplitPane();
@@ -119,7 +119,7 @@ public class Main {
 					workspace.setLineWrap(true);
 					workspace.setText("Hello World!\n++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.");
 					leftScrollPane.setViewportView(workspace);
-					
+
 					workspaceOutputPane.setLeftComponent(leftScrollPane);
 					workspaceOutputPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 
@@ -128,11 +128,11 @@ public class Main {
 					outputPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 					output = new JTextArea();
 					outputPane.setViewportView(output);
-					
+
 					workspaceOutputPane.setRightComponent(outputPane);
-					
+
 				}
-				
+
 				/* Right split pane - controls + memory output */
 				{
 
