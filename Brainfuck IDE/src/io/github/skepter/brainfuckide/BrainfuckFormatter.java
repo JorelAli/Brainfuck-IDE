@@ -58,45 +58,49 @@ public class BrainfuckFormatter {
 	 */
 	private void format(char c, char prevChar, char nextChar) {
 		switch (c) {
-		case Token.NEXT:
-		case Token.PREVIOUS:
-			if(prevChar == Token.NEXT) {
-				formattedOutput.append(c);
-			}else if(prevChar == Token.PREVIOUS) {
-				formattedOutput.append(c);
-			} else {
-				formattedOutput.append("\n").append(indent()).append(c);
-			}
-			break;
-		case Token.PLUS:
-		case Token.MINUS:
-			if (prevChar == Token.NEXT || prevChar == Token.PREVIOUS) {
-				formattedOutput.append(" ").append(c);
-			} else {
-				formattedOutput.append(c);
-			}
-			break;
-		case Token.OUTPUT:
-			indent();
-			formattedOutput.append(c);
-			break;
-		case Token.INPUT:
-			indent();
-			formattedOutput.append(c);
-			break;
-		case Token.BRACKET_LEFT:
-			formattedOutput.append("\n");
-			indent();
-			formattedOutput.append(c);
-			indentationLevel++;
+			case Token.NEXT:
+			case Token.PREVIOUS:
+				switch (prevChar) {
+					case Token.NEXT:
+					case Token.PREVIOUS:
+						formattedOutput.append(c);
+						break;
+					case '#':
+						formattedOutput.append(indent()).append(c);
+						break;
+					default:
+						formattedOutput.append("\n").append(indent()).append(c);
+						break;
 
-			break;
-		case Token.BRACKET_RIGHT:
-			formattedOutput.append("\n");
-			indent();
-			formattedOutput.append(c);
-			indentationLevel--;
-			break;
+				}
+				break;
+			case Token.PLUS:
+			case Token.MINUS:
+				if (prevChar == Token.NEXT || prevChar == Token.PREVIOUS) {
+					formattedOutput.append(" ").append(c);
+				} else {
+					formattedOutput.append(c);
+				}
+				break;
+			case Token.OUTPUT:
+				indent();
+				formattedOutput.append(c);
+				break;
+			case Token.INPUT:
+				indent();
+				formattedOutput.append(c);
+				break;
+			case Token.BRACKET_LEFT:
+				formattedOutput.append("\n").append(indent()).append(c);
+
+				indentationLevel++;
+
+				break;
+			case Token.BRACKET_RIGHT:
+				formattedOutput.append("\n");
+				indentationLevel--;
+				formattedOutput.append(indent()).append(c);
+				break;
 		}
 	}
 

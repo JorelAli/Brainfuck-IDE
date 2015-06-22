@@ -22,6 +22,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
+import java.awt.Toolkit;
 
 /**
  * Brainfuck IDE designed to run and debug Brainfuck code Extra credit to Fabian
@@ -81,6 +82,7 @@ public class Main {
 		/* Basic frame setup */
 
 		mainFrame = new JFrame();
+		mainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/io/github/skepter/brainfuckide/appIcon.png")));
 		mainFrame.setTitle("Brainfuck IDE");
 		mainFrame.setBounds(100, 100, 1100, 700);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
