@@ -49,6 +49,7 @@ public class Main {
 	private static int memory = DEFAULT_MEMORY;
 	private JTextField inputField;
 	private JTextField charInput;
+	private byte bits = 8;
 
 	/**
 	 * Launch the application.
@@ -147,7 +148,7 @@ public class Main {
 
 					JSplitPane secondSplitPane = new JSplitPane();
 					secondSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-					secondSplitPane.setDividerLocation(300);
+					secondSplitPane.setDividerLocation(230);
 					splitPane.setRightComponent(secondSplitPane);
 
 					JPanel devPanel = new JPanel();
@@ -165,7 +166,7 @@ public class Main {
 							runningThread = new Thread() {
 								@Override
 								public void run() {
-									new BrainfuckIntegrator(new BrainfuckEngine(memory, new JTextFieldInputStream(inputField), wrapping), workspace.getText(), memoryOutput);
+									new BrainfuckIntegrator(new BrainfuckEngine(memory, new JTextFieldInputStream(inputField), wrapping, bits), workspace.getText(), memoryOutput);
 								}
 							};
 							runningThread.start();
@@ -279,12 +280,27 @@ public class Main {
 					JLabel cellSizeLabel1 = new JLabel("Set cell size (Bits)");
 
 					JRadioButton cellSize8 = new JRadioButton("8 Bits");
+					cellSize8.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							bits = 8;
+						}
+					});
 					cellSize8.setBackground(new Color(135, 206, 250));
 
 					JRadioButton cellSize16 = new JRadioButton("16 Bits");
+					cellSize16.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							bits = 16;
+						}
+					});
 					cellSize16.setBackground(new Color(135, 206, 250));
 
 					JRadioButton cellSize32 = new JRadioButton("32 Bits");
+					cellSize32.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							bits = 32;
+						}
+					});
 					cellSize32.setBackground(new Color(135, 206, 250));
 
 					ButtonGroup group = new ButtonGroup();
@@ -292,73 +308,96 @@ public class Main {
 					group.add(cellSize16);
 					group.add(cellSize32);
 					
+					group.setSelected(cellSize8.getModel(), true);
+					
+					
 					
 					/* Group layout */
 
 					GroupLayout gl_devPanel = new GroupLayout(devPanel);
-					gl_devPanel.setHorizontalGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING).addGroup(
-							gl_devPanel
-									.createSequentialGroup()
-									.addContainerGap()
-									.addGroup(
-											gl_devPanel
-													.createParallelGroup(Alignment.LEADING)
-													.addGroup(
-															gl_devPanel
-																	.createSequentialGroup()
-																	.addGroup(
-																			gl_devPanel
-																					.createParallelGroup(Alignment.TRAILING)
-																					.addGroup(
-																							gl_devPanel.createSequentialGroup().addComponent(runButton, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE).addPreferredGap(ComponentPlacement.RELATED)
-																									.addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE).addPreferredGap(ComponentPlacement.RELATED)
-																									.addComponent(resetButton, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
-																					.addGroup(
-																							gl_devPanel.createSequentialGroup().addComponent(formatButton, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
-																									.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(unformatButton, GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
-																									.addPreferredGap(ComponentPlacement.RELATED).addComponent(wrappingButton))
-																					.addGroup(
-																							gl_devPanel.createSequentialGroup().addComponent(setMemoryLabel).addGap(18)
-																									.addComponent(cellCount, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
-																					.addGroup(
-																							gl_devPanel
-																									.createParallelGroup(Alignment.LEADING)
-																									.addGroup(gl_devPanel.createSequentialGroup().addComponent(cellSize16).addGap(18).addComponent(cellSize32))
-																									.addGroup(
-																											gl_devPanel.createSequentialGroup().addComponent(characterLabel).addPreferredGap(ComponentPlacement.UNRELATED)
-																													.addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addGap(18)
-																													.addComponent(characterCodeLabel)))).addGap(11))
-													.addGroup(
-															gl_devPanel
-																	.createSequentialGroup()
-																	.addGroup(
-																			gl_devPanel
-																					.createParallelGroup(Alignment.TRAILING, false)
-																					.addComponent(cellSizeLabel1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-																					.addGroup(
-																							Alignment.LEADING,
-																							gl_devPanel.createSequentialGroup().addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE).addGap(18)
-																									.addComponent(inputField, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))).addContainerGap(11, Short.MAX_VALUE))
-													.addGroup(gl_devPanel.createSequentialGroup().addComponent(cellSize8).addContainerGap(249, Short.MAX_VALUE)))));
-					gl_devPanel.setVerticalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING).addGroup(
-							gl_devPanel
-									.createSequentialGroup()
-									.addContainerGap()
-									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(runButton).addComponent(stopButton).addComponent(resetButton))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(formatButton).addComponent(unformatButton).addComponent(wrappingButton))
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(setMemoryLabel).addComponent(cellCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(inputField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(inputLabel))
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(cellSizeLabel1)
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(cellSize8).addComponent(cellSize16).addComponent(cellSize32))
-									.addPreferredGap(ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
-									.addGroup(
-											gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(characterLabel).addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-													.addComponent(characterCodeLabel)).addContainerGap()));
+					gl_devPanel.setHorizontalGroup(
+						gl_devPanel.createParallelGroup(Alignment.TRAILING)
+							.addGroup(gl_devPanel.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_devPanel.createSequentialGroup()
+										.addGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING)
+											.addGroup(gl_devPanel.createSequentialGroup()
+												.addComponent(runButton, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(resetButton, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
+											.addGroup(gl_devPanel.createSequentialGroup()
+												.addComponent(formatButton, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.UNRELATED)
+												.addComponent(unformatButton, GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(wrappingButton))
+											.addGroup(Alignment.LEADING, gl_devPanel.createSequentialGroup()
+												.addComponent(setMemoryLabel)
+												.addGap(18)
+												.addComponent(cellCount, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
+											.addGroup(Alignment.LEADING, gl_devPanel.createSequentialGroup()
+												.addGap(63)
+												.addComponent(cellSize16)
+												.addGap(18)
+												.addComponent(cellSize32)))
+										.addGap(11))
+									.addGroup(gl_devPanel.createSequentialGroup()
+										.addGroup(gl_devPanel.createParallelGroup(Alignment.LEADING, false)
+											.addComponent(cellSizeLabel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+											.addGroup(gl_devPanel.createSequentialGroup()
+												.addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+												.addGap(18)
+												.addComponent(inputField, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)))
+										.addContainerGap(11, Short.MAX_VALUE))
+									.addGroup(gl_devPanel.createSequentialGroup()
+										.addComponent(cellSize8)
+										.addContainerGap(303, Short.MAX_VALUE))
+									.addGroup(gl_devPanel.createSequentialGroup()
+										.addComponent(characterLabel)
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addGap(18)
+										.addComponent(characterCodeLabel)
+										.addContainerGap(74, Short.MAX_VALUE))))
+					);
+					gl_devPanel.setVerticalGroup(
+						gl_devPanel.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_devPanel.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(runButton)
+									.addComponent(stopButton)
+									.addComponent(resetButton))
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(formatButton)
+									.addComponent(unformatButton)
+									.addComponent(wrappingButton))
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(setMemoryLabel)
+									.addComponent(cellCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(inputField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+									.addComponent(inputLabel))
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addComponent(cellSizeLabel1)
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(cellSize8)
+									.addComponent(cellSize16)
+									.addComponent(cellSize32))
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(characterLabel)
+									.addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+									.addComponent(characterCodeLabel))
+								.addContainerGap(74, Short.MAX_VALUE))
+					);
 					devPanel.setLayout(gl_devPanel);
 
 					/* Set output */

@@ -16,7 +16,7 @@ public class BrainfuckEngine {
 	/**
 	 * The memory thats available for this brainfuck program.
 	 */
-	protected short[] data;
+	protected long[] data;
 
 	/**
 	 * The data pointer that points to the current index in the
@@ -58,6 +58,7 @@ public class BrainfuckEngine {
 	protected int columnCount = 0;
 	
 	private boolean wrapping = true;
+	public byte bits = 8;
 
 	/**
 	 * The {@link Token} class contains tokens in brainfuck.
@@ -96,21 +97,25 @@ public class BrainfuckEngine {
 	 *            The outputstream of this program.
 	 */
 	public BrainfuckEngine(int cells, InputStream in) {
-		initiate(cells);
-		consoleReader = new InputStreamReader(in);
+		this(cells, in, true);
 	}
 	
 	public BrainfuckEngine(int cells, InputStream in, boolean wrapping) {
+		this(cells, in, wrapping, (byte) 8);
+	}
+	
+	public BrainfuckEngine(int cells, InputStream in, boolean wrapping, byte bits) {
 		initiate(cells);
 		consoleReader = new InputStreamReader(in);
 		this.wrapping = wrapping;
+		this.bits = bits;
 	}
 
 	/**
 	 * Initiate this instance.
 	 */
 	protected void initiate(int cells) {
-		data = new short[cells];
+		data = new long[cells];
 		dataPointer = 0;
 		charPointer = 0;
 	}
@@ -179,9 +184,9 @@ public class BrainfuckEngine {
 			 */
 			if (data[dataPointer] == 0) {
 				if(wrapping) {
-					data[dataPointer] = (short) 255;	
+					data[dataPointer] = (long) Math.pow(2, bits) -1 ;	
 				} else {
-					data[dataPointer] = (short) 0;
+					data[dataPointer] = 0;
 				}
 				
 			} else {

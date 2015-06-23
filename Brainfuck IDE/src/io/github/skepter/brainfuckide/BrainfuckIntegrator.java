@@ -10,14 +10,35 @@ public class BrainfuckIntegrator {
 	BrainfuckEngine engine;
 	String code;
 	JTextArea memoryOutput;
+	byte bits;
+	int builderLength;
+	String format;
 
 	public BrainfuckIntegrator(BrainfuckEngine engine, String code, JTextArea memoryOutput) {
 		this.engine = engine;
 		this.code = code;
 		this.memoryOutput = memoryOutput;
-
+		this.bits = engine.bits;
+		setBuilderLength();
 		interpret();
 		debugInfo();
+	}
+	
+	private void setBuilderLength() {
+		switch(bits) {
+			case 8:
+				builderLength = 48;
+				format = "%03d";
+				break;
+			case 16:
+				builderLength = 72;
+				format = "%05d";
+				break;
+			case 32:
+				builderLength = 132;
+				format = "%010d";
+				break;
+		}
 	}
 
 	public void interpret() {
@@ -32,10 +53,10 @@ public class BrainfuckIntegrator {
 
 		/* Formats it into a nice grid */
 		StringBuilder builder = new StringBuilder();
-		for (short s : engine.data) {
-			builder.append(String.format("%03d", s)).append(" ");
+		for (long l : engine.data) {
+			builder.append(String.format(format, l)).append(" ");
 		}
-		for (String part : getParts(builder.toString(), 48)) {
+		for (String part : getParts(builder.toString(), builderLength)) {
 			if (!(memoryOutput.getText().equals("")))
 				memoryOutput.setText(memoryOutput.getText() + "\n" + part);
 			else
