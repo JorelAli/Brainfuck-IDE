@@ -8,8 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 
 import javax.swing.ButtonGroup;
@@ -419,9 +422,25 @@ public class Main {
 				JFileChooser fileChooser = new JFileChooser();
 				FileFilter filter = new FileNameExtensionFilter("Brainfuck file", "bf");
 				fileChooser.addChoosableFileFilter(filter);
-				fileChooser.showOpenDialog(mainFrame);
-				File file = fileChooser.getSelectedFile();
-				Main.file = file;
+				int option = fileChooser.showOpenDialog(mainFrame);
+				if (option == JFileChooser.APPROVE_OPTION) {
+					File file = fileChooser.getSelectedFile();
+					Main.file = file;
+					try {
+						FileReader fr = new FileReader(file);
+						BufferedReader br = new BufferedReader(fr);
+						StringBuilder out = new StringBuilder();
+						String s;
+						while((s = br.readLine()) != null) {
+							out.append(s).append("\n");
+						}
+						workspace.setText(out.toString());
+						br.close();
+						fr.close();
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(mainFrame, "There was an error whilst reading the file!");
+					}
+				}
 			}
 		});
 		mnNewMenu.add(openItem);
