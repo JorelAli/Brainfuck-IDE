@@ -8,13 +8,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -26,6 +34,8 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * Brainfuck IDE designed to run and debug Brainfuck code Extra credit to Fabian
@@ -45,6 +55,7 @@ public class Main {
 	private final static int DEFAULT_MEMORY = 384;
 	private boolean wrapping = true;
 	private Thread runningThread;
+	private static File file;
 
 	private static int memory = DEFAULT_MEMORY;
 	private JTextField inputField;
@@ -307,97 +318,72 @@ public class Main {
 					group.add(cellSize8);
 					group.add(cellSize16);
 					group.add(cellSize32);
-					
+
 					group.setSelected(cellSize8.getModel(), true);
-					
-					
-					
+
 					/* Group layout */
 
 					GroupLayout gl_devPanel = new GroupLayout(devPanel);
-					gl_devPanel.setHorizontalGroup(
-						gl_devPanel.createParallelGroup(Alignment.TRAILING)
-							.addGroup(gl_devPanel.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(gl_devPanel.createParallelGroup(Alignment.LEADING)
-									.addGroup(gl_devPanel.createSequentialGroup()
-										.addGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING)
-											.addGroup(gl_devPanel.createSequentialGroup()
-												.addComponent(runButton, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(resetButton, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
-											.addGroup(gl_devPanel.createSequentialGroup()
-												.addComponent(formatButton, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(ComponentPlacement.UNRELATED)
-												.addComponent(unformatButton, GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
-												.addPreferredGap(ComponentPlacement.RELATED)
-												.addComponent(wrappingButton))
-											.addGroup(Alignment.LEADING, gl_devPanel.createSequentialGroup()
-												.addComponent(setMemoryLabel)
-												.addGap(18)
-												.addComponent(cellCount, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
-											.addGroup(Alignment.LEADING, gl_devPanel.createSequentialGroup()
-												.addGap(63)
-												.addComponent(cellSize16)
-												.addGap(18)
-												.addComponent(cellSize32)))
-										.addGap(11))
-									.addGroup(gl_devPanel.createSequentialGroup()
-										.addGroup(gl_devPanel.createParallelGroup(Alignment.LEADING, false)
-											.addComponent(cellSizeLabel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-											.addGroup(gl_devPanel.createSequentialGroup()
-												.addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
-												.addGap(18)
-												.addComponent(inputField, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)))
-										.addContainerGap(11, Short.MAX_VALUE))
-									.addGroup(gl_devPanel.createSequentialGroup()
-										.addComponent(cellSize8)
-										.addContainerGap(303, Short.MAX_VALUE))
-									.addGroup(gl_devPanel.createSequentialGroup()
-										.addComponent(characterLabel)
-										.addPreferredGap(ComponentPlacement.UNRELATED)
-										.addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-										.addGap(18)
-										.addComponent(characterCodeLabel)
-										.addContainerGap(74, Short.MAX_VALUE))))
-					);
-					gl_devPanel.setVerticalGroup(
-						gl_devPanel.createParallelGroup(Alignment.LEADING)
-							.addGroup(gl_devPanel.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
-									.addComponent(runButton)
-									.addComponent(stopButton)
-									.addComponent(resetButton))
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
-									.addComponent(formatButton)
-									.addComponent(unformatButton)
-									.addComponent(wrappingButton))
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
-									.addComponent(setMemoryLabel)
-									.addComponent(cellCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
-									.addComponent(inputField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-									.addComponent(inputLabel))
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(cellSizeLabel1)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
-									.addComponent(cellSize8)
-									.addComponent(cellSize16)
-									.addComponent(cellSize32))
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
-									.addComponent(characterLabel)
-									.addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-									.addComponent(characterCodeLabel))
-								.addContainerGap(74, Short.MAX_VALUE))
-					);
+					gl_devPanel.setHorizontalGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING).addGroup(
+							gl_devPanel
+									.createSequentialGroup()
+									.addContainerGap()
+									.addGroup(
+											gl_devPanel
+													.createParallelGroup(Alignment.LEADING)
+													.addGroup(
+															gl_devPanel
+																	.createSequentialGroup()
+																	.addGroup(
+																			gl_devPanel
+																					.createParallelGroup(Alignment.TRAILING)
+																					.addGroup(
+																							gl_devPanel.createSequentialGroup().addComponent(runButton, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE).addPreferredGap(ComponentPlacement.RELATED)
+																									.addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE).addPreferredGap(ComponentPlacement.RELATED)
+																									.addComponent(resetButton, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
+																					.addGroup(
+																							gl_devPanel.createSequentialGroup().addComponent(formatButton, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
+																									.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(unformatButton, GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+																									.addPreferredGap(ComponentPlacement.RELATED).addComponent(wrappingButton))
+																					.addGroup(
+																							Alignment.LEADING,
+																							gl_devPanel.createSequentialGroup().addComponent(setMemoryLabel).addGap(18)
+																									.addComponent(cellCount, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
+																					.addGroup(Alignment.LEADING, gl_devPanel.createSequentialGroup().addGap(63).addComponent(cellSize16).addGap(18).addComponent(cellSize32))).addGap(11))
+													.addGroup(
+															gl_devPanel
+																	.createSequentialGroup()
+																	.addGroup(
+																			gl_devPanel
+																					.createParallelGroup(Alignment.LEADING, false)
+																					.addComponent(cellSizeLabel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+																					.addGroup(
+																							gl_devPanel.createSequentialGroup().addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE).addGap(18)
+																									.addComponent(inputField, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))).addContainerGap(11, Short.MAX_VALUE))
+													.addGroup(gl_devPanel.createSequentialGroup().addComponent(cellSize8).addContainerGap(303, Short.MAX_VALUE))
+													.addGroup(
+															gl_devPanel.createSequentialGroup().addComponent(characterLabel).addPreferredGap(ComponentPlacement.UNRELATED)
+																	.addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addGap(18).addComponent(characterCodeLabel)
+																	.addContainerGap(74, Short.MAX_VALUE)))));
+					gl_devPanel.setVerticalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING).addGroup(
+							gl_devPanel
+									.createSequentialGroup()
+									.addContainerGap()
+									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(runButton).addComponent(stopButton).addComponent(resetButton))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(formatButton).addComponent(unformatButton).addComponent(wrappingButton))
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(setMemoryLabel).addComponent(cellCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(inputField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(inputLabel))
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(cellSizeLabel1)
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(cellSize8).addComponent(cellSize16).addComponent(cellSize32))
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addGroup(
+											gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(characterLabel).addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+													.addComponent(characterCodeLabel)).addContainerGap(74, Short.MAX_VALUE)));
 					devPanel.setLayout(gl_devPanel);
 
 					/* Set output */
@@ -410,6 +396,61 @@ public class Main {
 				}
 			}
 		}
+
+		/* Menu bar */
+
+		JMenuBar menuBar = new JMenuBar();
+		mainFrame.setJMenuBar(menuBar);
+
+		JMenu mnNewMenu = new JMenu("File");
+		menuBar.add(mnNewMenu);
+
+		JMenuItem newItem = new JMenuItem("New file");
+		newItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		mnNewMenu.add(newItem);
+
+		JMenuItem openItem = new JMenuItem("Open file");
+		openItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				FileFilter filter = new FileNameExtensionFilter("Brainfuck file", "bf");
+				fileChooser.addChoosableFileFilter(filter);
+				fileChooser.showOpenDialog(mainFrame);
+				File file = fileChooser.getSelectedFile();
+				Main.file = file;
+			}
+		});
+		mnNewMenu.add(openItem);
+
+		JMenuItem saveItem = new JMenuItem("Save file");
+		saveItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+				FileFilter filter = new FileNameExtensionFilter("Brainfuck file", "bf");
+				fileChooser.addChoosableFileFilter(filter);
+				int option = fileChooser.showSaveDialog(mainFrame);
+				if (option == JFileChooser.APPROVE_OPTION) {
+					try {
+						FileWriter fw = new FileWriter(fileChooser.getSelectedFile() + ".bf");
+						BufferedWriter bw = new BufferedWriter(fw);
+						for (int i = 0; i < workspace.getText().split("\n").length; i++) {
+							bw.write(workspace.getText().split("\n")[i]);
+							bw.newLine();
+						}
+						bw.close();
+						fw.close();
+						JOptionPane.showMessageDialog(mainFrame, fileChooser.getSelectedFile().getName() + " saved successfully");
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(mainFrame, "There was an error whilst saving the file!");
+					}
+				}
+			}
+		});
+		mnNewMenu.add(saveItem);
 
 	}
 
