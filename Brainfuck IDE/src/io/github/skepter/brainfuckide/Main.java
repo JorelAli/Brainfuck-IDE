@@ -410,6 +410,35 @@ public class Main {
 		JMenuItem newItem = new JMenuItem("New file");
 		newItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (Main.file != null) {
+					String text = null;
+
+					try {
+						FileReader fr = new FileReader(file);
+						BufferedReader br = new BufferedReader(fr);
+						StringBuilder out = new StringBuilder();
+						String s;
+						while ((s = br.readLine()) != null) {
+							out.append(s).append("\n");
+						}
+						text = out.toString();
+						br.close();
+						fr.close();
+					} catch (Exception e1) {
+					}
+
+					if (!workspace.getText().equals(text)) {
+						int option = JOptionPane.showConfirmDialog(mainFrame, "Your file is not saved! Do you want to continue?");
+						switch(option) {
+							case JOptionPane.CANCEL_OPTION:
+							case JOptionPane.NO_OPTION:
+								return;
+							case JOptionPane.YES_OPTION:
+								break;
+						}
+					}
+				}
+
 				Main.file = null;
 				workspace.setText("");
 			}
@@ -469,6 +498,7 @@ public class Main {
 					int option = fileChooser.showSaveDialog(mainFrame);
 					if (option == JFileChooser.APPROVE_OPTION) {
 						try {
+							Main.file = fileChooser.getSelectedFile();
 							FileWriter fw = new FileWriter(fileChooser.getSelectedFile() + ".bf");
 							BufferedWriter bw = new BufferedWriter(fw);
 							for (int i = 0; i < workspace.getText().split("\n").length; i++) {
