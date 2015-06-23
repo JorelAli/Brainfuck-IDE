@@ -11,7 +11,6 @@ import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 
@@ -411,7 +410,8 @@ public class Main {
 		JMenuItem newItem = new JMenuItem("New file");
 		newItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				Main.file = null;
+				workspace.setText("");
 			}
 		});
 		mnNewMenu.add(newItem);
@@ -431,7 +431,7 @@ public class Main {
 						BufferedReader br = new BufferedReader(fr);
 						StringBuilder out = new StringBuilder();
 						String s;
-						while((s = br.readLine()) != null) {
+						while ((s = br.readLine()) != null) {
 							out.append(s).append("\n");
 						}
 						workspace.setText(out.toString());
@@ -448,13 +448,9 @@ public class Main {
 		JMenuItem saveItem = new JMenuItem("Save file");
 		saveItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser fileChooser = new JFileChooser();
-				FileFilter filter = new FileNameExtensionFilter("Brainfuck file", "bf");
-				fileChooser.addChoosableFileFilter(filter);
-				int option = fileChooser.showSaveDialog(mainFrame);
-				if (option == JFileChooser.APPROVE_OPTION) {
+				if (Main.file != null) {
 					try {
-						FileWriter fw = new FileWriter(fileChooser.getSelectedFile() + ".bf");
+						FileWriter fw = new FileWriter(Main.file + ".bf");
 						BufferedWriter bw = new BufferedWriter(fw);
 						for (int i = 0; i < workspace.getText().split("\n").length; i++) {
 							bw.write(workspace.getText().split("\n")[i]);
@@ -462,9 +458,29 @@ public class Main {
 						}
 						bw.close();
 						fw.close();
-						JOptionPane.showMessageDialog(mainFrame, fileChooser.getSelectedFile().getName() + " saved successfully");
+						JOptionPane.showMessageDialog(mainFrame, Main.file.getName() + ".bf saved successfully");
 					} catch (Exception ex) {
 						JOptionPane.showMessageDialog(mainFrame, "There was an error whilst saving the file!");
+					}
+				} else {
+					JFileChooser fileChooser = new JFileChooser();
+					FileFilter filter = new FileNameExtensionFilter("Brainfuck file", "bf");
+					fileChooser.addChoosableFileFilter(filter);
+					int option = fileChooser.showSaveDialog(mainFrame);
+					if (option == JFileChooser.APPROVE_OPTION) {
+						try {
+							FileWriter fw = new FileWriter(fileChooser.getSelectedFile() + ".bf");
+							BufferedWriter bw = new BufferedWriter(fw);
+							for (int i = 0; i < workspace.getText().split("\n").length; i++) {
+								bw.write(workspace.getText().split("\n")[i]);
+								bw.newLine();
+							}
+							bw.close();
+							fw.close();
+							JOptionPane.showMessageDialog(mainFrame, fileChooser.getSelectedFile().getName() + ".bf saved successfully");
+						} catch (Exception ex) {
+							JOptionPane.showMessageDialog(mainFrame, "There was an error whilst saving the file!");
+						}
 					}
 				}
 			}
