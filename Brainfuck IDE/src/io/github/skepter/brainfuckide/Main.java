@@ -38,6 +38,7 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.ImageIcon;
 
 /**
  * Brainfuck IDE designed to run and debug Brainfuck code Extra credit to Fabian
@@ -101,7 +102,7 @@ public class Main {
 		/* Basic frame setup */
 
 		mainFrame = new JFrame();
-		mainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/io/github/skepter/brainfuckide/appIcon.png")));
+		mainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/io/github/skepter/brainfuckide/icons/appIcon.png")));
 		mainFrame.setTitle("Brainfuck IDE");
 		mainFrame.setBounds(100, 100, 1100, 700);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -170,6 +171,7 @@ public class Main {
 					secondSplitPane.setLeftComponent(devPanel);
 
 					JButton runButton = new JButton("Run!");
+					runButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/bullet_go.png")));
 					runButton.addActionListener(new ActionListener() {
 						@SuppressWarnings("deprecation")
 						public void actionPerformed(ActionEvent arg0) {
@@ -187,6 +189,7 @@ public class Main {
 					});
 
 					JButton resetButton = new JButton("Reset");
+					resetButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/arrow_refresh.png")));
 					resetButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							memoryOutput.setText("");
@@ -230,6 +233,7 @@ public class Main {
 					JLabel inputLabel = new JLabel("Input:");
 
 					JButton formatButton = new JButton("Format");
+					formatButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/page_white_paintbrush.png")));
 					formatButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent arg0) {
 							new BrainfuckFormatter().format();
@@ -265,6 +269,7 @@ public class Main {
 					charInput.setColumns(10);
 
 					JButton unformatButton = new JButton("Unformat");
+					unformatButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/page_white.png")));
 					unformatButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent arg0) {
 							new BrainfuckFormatter().unformat();
@@ -287,6 +292,7 @@ public class Main {
 					});
 
 					JButton stopButton = new JButton("Stop");
+					stopButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/stop.png")));
 
 					/* Cell size (bits) */
 
@@ -326,66 +332,92 @@ public class Main {
 					/* Group layout */
 
 					GroupLayout gl_devPanel = new GroupLayout(devPanel);
-					gl_devPanel.setHorizontalGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING).addGroup(
-							gl_devPanel
-									.createSequentialGroup()
-									.addContainerGap()
-									.addGroup(
-											gl_devPanel
-													.createParallelGroup(Alignment.LEADING)
-													.addGroup(
-															gl_devPanel
-																	.createSequentialGroup()
-																	.addGroup(
-																			gl_devPanel
-																					.createParallelGroup(Alignment.TRAILING)
-																					.addGroup(
-																							gl_devPanel.createSequentialGroup().addComponent(runButton, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE).addPreferredGap(ComponentPlacement.RELATED)
-																									.addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE).addPreferredGap(ComponentPlacement.RELATED)
-																									.addComponent(resetButton, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
-																					.addGroup(
-																							gl_devPanel.createSequentialGroup().addComponent(formatButton, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
-																									.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(unformatButton, GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
-																									.addPreferredGap(ComponentPlacement.RELATED).addComponent(wrappingButton))
-																					.addGroup(
-																							Alignment.LEADING,
-																							gl_devPanel.createSequentialGroup().addComponent(setMemoryLabel).addGap(18)
-																									.addComponent(cellCount, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
-																					.addGroup(Alignment.LEADING, gl_devPanel.createSequentialGroup().addGap(63).addComponent(cellSize16).addGap(18).addComponent(cellSize32))).addGap(11))
-													.addGroup(
-															gl_devPanel
-																	.createSequentialGroup()
-																	.addGroup(
-																			gl_devPanel
-																					.createParallelGroup(Alignment.LEADING, false)
-																					.addComponent(cellSizeLabel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-																					.addGroup(
-																							gl_devPanel.createSequentialGroup().addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE).addGap(18)
-																									.addComponent(inputField, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))).addContainerGap(11, Short.MAX_VALUE))
-													.addGroup(gl_devPanel.createSequentialGroup().addComponent(cellSize8).addContainerGap(303, Short.MAX_VALUE))
-													.addGroup(
-															gl_devPanel.createSequentialGroup().addComponent(characterLabel).addPreferredGap(ComponentPlacement.UNRELATED)
-																	.addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addGap(18).addComponent(characterCodeLabel)
-																	.addContainerGap(74, Short.MAX_VALUE)))));
-					gl_devPanel.setVerticalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING).addGroup(
-							gl_devPanel
-									.createSequentialGroup()
-									.addContainerGap()
-									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(runButton).addComponent(stopButton).addComponent(resetButton))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(formatButton).addComponent(unformatButton).addComponent(wrappingButton))
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(setMemoryLabel).addComponent(cellCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(inputField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addComponent(inputLabel))
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(cellSizeLabel1)
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(cellSize8).addComponent(cellSize16).addComponent(cellSize32))
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addGroup(
-											gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(characterLabel).addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-													.addComponent(characterCodeLabel)).addContainerGap(74, Short.MAX_VALUE)));
+					gl_devPanel.setHorizontalGroup(
+						gl_devPanel.createParallelGroup(Alignment.TRAILING)
+							.addGroup(gl_devPanel.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_devPanel.createSequentialGroup()
+										.addGroup(gl_devPanel.createParallelGroup(Alignment.LEADING)
+											.addGroup(gl_devPanel.createSequentialGroup()
+												.addComponent(runButton, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(resetButton, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
+											.addGroup(gl_devPanel.createSequentialGroup()
+												.addGap(63)
+												.addComponent(cellSize16)
+												.addGap(18)
+												.addComponent(cellSize32))
+											.addGroup(gl_devPanel.createSequentialGroup()
+												.addGroup(gl_devPanel.createParallelGroup(Alignment.TRAILING, false)
+													.addComponent(formatButton, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+													.addComponent(setMemoryLabel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+												.addGroup(gl_devPanel.createParallelGroup(Alignment.LEADING)
+													.addGroup(gl_devPanel.createSequentialGroup()
+														.addGap(18)
+														.addComponent(cellCount, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
+													.addGroup(Alignment.TRAILING, gl_devPanel.createSequentialGroup()
+														.addPreferredGap(ComponentPlacement.RELATED)
+														.addComponent(unformatButton)
+														.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+														.addComponent(wrappingButton)))))
+										.addGap(11))
+									.addGroup(gl_devPanel.createSequentialGroup()
+										.addGroup(gl_devPanel.createParallelGroup(Alignment.LEADING, false)
+											.addComponent(cellSizeLabel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+											.addGroup(gl_devPanel.createSequentialGroup()
+												.addComponent(inputLabel, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+												.addGap(18)
+												.addComponent(inputField, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE)))
+										.addContainerGap(11, Short.MAX_VALUE))
+									.addGroup(gl_devPanel.createSequentialGroup()
+										.addComponent(cellSize8)
+										.addContainerGap(303, Short.MAX_VALUE))
+									.addGroup(gl_devPanel.createSequentialGroup()
+										.addComponent(characterLabel)
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addGap(18)
+										.addComponent(characterCodeLabel)
+										.addContainerGap(74, Short.MAX_VALUE))))
+					);
+					gl_devPanel.setVerticalGroup(
+						gl_devPanel.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_devPanel.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(runButton)
+									.addComponent(stopButton)
+									.addComponent(resetButton))
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(formatButton)
+									.addComponent(wrappingButton)
+									.addComponent(unformatButton))
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(setMemoryLabel)
+									.addComponent(cellCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(inputField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+									.addComponent(inputLabel))
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addComponent(cellSizeLabel1)
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(cellSize8)
+									.addComponent(cellSize16)
+									.addComponent(cellSize32))
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE)
+									.addComponent(characterLabel)
+									.addComponent(charInput, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+									.addComponent(characterCodeLabel))
+								.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					);
 					devPanel.setLayout(gl_devPanel);
 
 					/* Set output */
@@ -408,6 +440,7 @@ public class Main {
 		menuBar.add(mnNewMenu);
 
 		JMenuItem newItem = new JMenuItem("New file");
+		newItem.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/add.png")));
 		newItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (Main.file != null) {
@@ -446,6 +479,7 @@ public class Main {
 		mnNewMenu.add(newItem);
 
 		JMenuItem openItem = new JMenuItem("Open file");
+		openItem.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/folder_page_white.png")));
 		openItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fileChooser = new JFileChooser();
@@ -475,6 +509,7 @@ public class Main {
 		mnNewMenu.add(openItem);
 
 		JMenuItem saveItem = new JMenuItem("Save file");
+		saveItem.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/disk.png")));
 		saveItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (Main.file != null) {
