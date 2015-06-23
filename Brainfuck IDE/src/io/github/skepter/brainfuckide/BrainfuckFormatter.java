@@ -27,6 +27,13 @@ public class BrainfuckFormatter {
 		public final static char BRACKET_LEFT = '[';
 		public final static char BRACKET_RIGHT = ']';
 	}
+	
+	public void unformat() {
+		String str = Main.workspace.getText();
+		str = str.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", "");
+		Main.workspace.setText(str);
+		Main.workspace.setCaretPosition(0);
+	}
 
 	public void format() {
 		formattedOutput = new StringBuilder();

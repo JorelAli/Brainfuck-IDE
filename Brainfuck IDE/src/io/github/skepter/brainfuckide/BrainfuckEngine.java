@@ -56,6 +56,8 @@ public class BrainfuckEngine {
 	 * The current column the engine is at.
 	 */
 	protected int columnCount = 0;
+	
+	private boolean wrapping = true;
 
 	/**
 	 * The {@link Token} class contains tokens in brainfuck.
@@ -80,7 +82,7 @@ public class BrainfuckEngine {
 	 *            The amount of memory cells.
 	 */
 	public BrainfuckEngine(int cells) {
-		this(cells, System.in);
+		this(cells, System.in, true);
 	}
 
 	/**
@@ -96,6 +98,12 @@ public class BrainfuckEngine {
 	public BrainfuckEngine(int cells, InputStream in) {
 		initiate(cells);
 		consoleReader = new InputStreamReader(in);
+	}
+	
+	public BrainfuckEngine(int cells, InputStream in, boolean wrapping) {
+		initiate(cells);
+		consoleReader = new InputStreamReader(in);
+		this.wrapping = wrapping;
 	}
 
 	/**
@@ -170,7 +178,12 @@ public class BrainfuckEngine {
 			 * ": Value can not be lower than zero."); }
 			 */
 			if (data[dataPointer] == 0) {
-				data[dataPointer] = (short) 255;
+				if(wrapping) {
+					data[dataPointer] = (short) 255;	
+				} else {
+					data[dataPointer] = (short) 0;
+				}
+				
 			} else {
 				data[dataPointer]--;
 			}
