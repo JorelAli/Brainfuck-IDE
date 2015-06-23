@@ -132,6 +132,7 @@ public class Main {
 					JScrollPane outputPane = new JScrollPane();
 					outputPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 					output = new JTextArea();
+					output.setEditable(false);
 					outputPane.setViewportView(output);
 
 					workspaceOutputPane.setRightComponent(outputPane);
@@ -154,7 +155,14 @@ public class Main {
 					JButton runButton = new JButton("Run!");
 					runButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent arg0) {
-							new BrainfuckIntegrator(new BrainfuckEngine(memory, new JTextFieldInputStream(inputField), wrapping), workspace.getText(), memoryOutput);
+							Thread thread = new Thread() {
+								@Override
+								public void run() {
+									new BrainfuckIntegrator(new BrainfuckEngine(memory, new JTextFieldInputStream(inputField), wrapping), workspace.getText(), memoryOutput);
+								}
+							};
+							thread.start();
+							
 						}
 					});
 
