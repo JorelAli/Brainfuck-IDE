@@ -243,7 +243,7 @@ public class Main {
 					/* Character code */
 
 					JLabel characterLabel = new JLabel("Enter a character:");
-					JLabel characterCodeLabel = new JLabel("Character code:");
+					final JLabel characterCodeLabel = new JLabel("Character code:");
 
 					charInput = new JTextField();
 					charInput.addKeyListener(new KeyListener() {
@@ -276,7 +276,7 @@ public class Main {
 						}
 					});
 
-					JToggleButton wrappingButton = new JToggleButton("Wrapping mode enabled");
+					final JToggleButton wrappingButton = new JToggleButton("Wrapping mode enabled");
 					wrappingButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							if (wrappingButton.isSelected()) {
