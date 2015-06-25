@@ -56,7 +56,7 @@ public class BrainfuckEngine {
 	 * The current column the engine is at.
 	 */
 	protected int columnCount = 0;
-	
+
 	private boolean wrapping = true;
 	public byte bits = 8;
 
@@ -99,11 +99,11 @@ public class BrainfuckEngine {
 	public BrainfuckEngine(int cells, InputStream in) {
 		this(cells, in, true);
 	}
-	
+
 	public BrainfuckEngine(int cells, InputStream in, boolean wrapping) {
 		this(cells, in, wrapping, (byte) 8);
 	}
-	
+
 	public BrainfuckEngine(int cells, InputStream in, boolean wrapping, byte bits) {
 		initiate(cells);
 		consoleReader = new InputStreamReader(in);
@@ -146,89 +146,96 @@ public class BrainfuckEngine {
 	 */
 	protected void interpret(char c, char[] chars) throws Exception {
 		switch (c) {
-		case Token.NEXT:
-			// Increment the data pointer (to point to the next cell to the
-			// right).
-			if ((dataPointer + 1) > data.length) {
-				throw new Exception("Error on line " + lineCount + ", column " + columnCount + ":" + "data pointer (" + dataPointer + ") on postion " + charPointer + "" + " out of range.");
-			}
-			dataPointer++;
-			break;
-		case Token.PREVIOUS:
-			// Decrement the data pointer (to point to the next cell to the
-			// left).
-			if ((dataPointer - 1) < 0) {
-				throw new Exception("Error on line " + lineCount + ", column " + columnCount + ":" + "data pointer (" + dataPointer + ") on postion " + charPointer + " " + "negative.");
-			}
-			dataPointer--;
-			break;
-		case Token.PLUS:
-			// Increment (increase by one) the short at the data pointer.
-			/*
-			 * if ((((int) data[dataPointer]) + 1) > Integer.MAX_VALUE) { throw
-			 * new Exception("Error on line " + lineCount + ", column " +
-			 * columnCount + ":" + "short value at data pointer (" + dataPointer
-			 * + ") " + " on postion " + charPointer +
-			 * " higher than short max value."); }
-			 */
-			data[dataPointer]++;
-			break;
-		case Token.MINUS:
-			// Decrement (decrease by one) the short at the data pointer.
-			/*
-			 * if ((data[dataPointer] - 1) < 0) { throw new
-			 * Exception("Error on line " + lineCount + ", column " +
-			 * columnCount + ":" + "at data pointer " + dataPointer +
-			 * " on postion " + charPointer +
-			 * ": Value can not be lower than zero."); }
-			 */
-			if (data[dataPointer] == 0) {
-				if(wrapping) {
-					data[dataPointer] = (long) Math.pow(2, bits) -1 ;	
-				} else {
-					data[dataPointer] = 0;
+			case Token.NEXT:
+				// Increment the data pointer (to point to the next cell to the
+				// right).
+				if ((dataPointer + 1) > data.length) {
+					throw new Exception("Error on line " + lineCount + ", column " + columnCount + ":" + "data pointer (" + dataPointer + ") on postion " + charPointer + "" + " out of range.");
 				}
-				
-			} else {
-				data[dataPointer]--;
-			}
-			break;
-		case Token.OUTPUT:
-			// Output the short at the current index in a character.
-			Main.output.setText(Main.output.getText() + (char) data[dataPointer]);
-			break;
-		case Token.INPUT:
-			// Accept one short of input, storing its value in the short at the
-			// data pointer.
-			Main.setStatusLabel(dataPointer, true);
-			int inputValue;
-			while ((inputValue = consoleReader.read()) != -1) {
-				data[dataPointer] = (short) inputValue;
-			}
-			break;
-		case Token.BRACKET_LEFT:
-			if (data[dataPointer] == 0) {
+				dataPointer++;
+				break;
+			case Token.PREVIOUS:
+				// Decrement the data pointer (to point to the next cell to the
+				// left).
+				if ((dataPointer - 1) < 0) {
+					throw new Exception("Error on line " + lineCount + ", column " + columnCount + ":" + "data pointer (" + dataPointer + ") on postion " + charPointer + " " + "negative.");
+				}
+				dataPointer--;
+				break;
+			case Token.PLUS:
+				// Increment (increase by one) the short at the data pointer.
+				/*
+				 * if ((((int) data[dataPointer]) + 1) > Integer.MAX_VALUE) {
+				 * throw new Exception("Error on line " + lineCount +
+				 * ", column " + columnCount + ":" +
+				 * "short value at data pointer (" + dataPointer + ") " +
+				 * " on postion " + charPointer +
+				 * " higher than short max value."); }
+				 */
+
+				if (data[dataPointer] == (long) Math.pow(2, bits) - 1) {
+					data[dataPointer] = 0;
+				} else {
+					data[dataPointer]++;
+				}
+				break;
+			case Token.MINUS:
+				// Decrement (decrease by one) the short at the data pointer.
+				/*
+				 * if ((data[dataPointer] - 1) < 0) { throw new
+				 * Exception("Error on line " + lineCount + ", column " +
+				 * columnCount + ":" + "at data pointer " + dataPointer +
+				 * " on postion " + charPointer +
+				 * ": Value can not be lower than zero."); }
+				 */
+				if (data[dataPointer] == 0) {
+					if (wrapping) {
+						data[dataPointer] = (long) Math.pow(2, bits) - 1;
+					} else {
+						data[dataPointer] = 0;
+					}
+
+				} else {
+					data[dataPointer]--;
+				}
+				break;
+			case Token.OUTPUT:
+				// Output the short at the current index in a character.
+				Main.output.setText(Main.output.getText() + (char) data[dataPointer]);
+				break;
+			case Token.INPUT:
+				// Accept one short of input, storing its value in the short at
+				// the
+				// data pointer.
+				Main.setStatusLabel(dataPointer, true);
+				int inputValue;
+				while ((inputValue = consoleReader.read()) != -1) {
+					data[dataPointer] = (short) inputValue;
+				}
+				break;
+			case Token.BRACKET_LEFT:
+				if (data[dataPointer] == 0) {
+					int i = 1;
+					while (i > 0) {
+						char c2 = chars[++charPointer];
+						if (c2 == Token.BRACKET_LEFT)
+							i++;
+						else if (c2 == Token.BRACKET_RIGHT)
+							i--;
+					}
+				}
+				break;
+			case Token.BRACKET_RIGHT:
 				int i = 1;
 				while (i > 0) {
-					char c2 = chars[++charPointer];
+					char c2 = chars[--charPointer];
 					if (c2 == Token.BRACKET_LEFT)
-						i++;
-					else if (c2 == Token.BRACKET_RIGHT)
 						i--;
+					else if (c2 == Token.BRACKET_RIGHT)
+						i++;
 				}
-			}
-			break;
-		case Token.BRACKET_RIGHT:
-			int i = 1;
-			while (i > 0) {
-				char c2 = chars[--charPointer];
-				if (c2 == Token.BRACKET_LEFT)
-					i--;
-				else if (c2 == Token.BRACKET_RIGHT)
-					i++;
-			}
-			charPointer--;
-			break;
+				charPointer--;
+				break;
 		}
 		columnCount++;
 	}
