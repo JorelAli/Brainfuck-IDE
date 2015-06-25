@@ -63,6 +63,8 @@ public class BrainfuckIntegrator {
 				memoryOutput.setText(part);
 			memoryOutput.setCaretPosition(0);
 		}
+		
+		Main.highlight(engine.dataPointer, bits);
 	}
 
 	private List<String> getParts(String string, int partitionSize) {

@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -38,7 +39,10 @@ import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.ImageIcon;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
+import javax.swing.text.Highlighter.HighlightPainter;
 
 /**
  * Brainfuck IDE designed to run and debug Brainfuck code Extra credit to Fabian
@@ -51,7 +55,7 @@ public class Main {
 
 	private JFrame mainFrame;
 	public static JTextArea workspace;
-	private JTextArea memoryOutput;
+	private static JTextArea memoryOutput;
 	private JTextField cellCount;
 	private static JLabel statusLabel;
 	public static JTextArea output;
@@ -232,7 +236,6 @@ public class Main {
 					inputField.setColumns(10);
 					is = new JTextFieldInputStream(inputField);
 					inputField.addActionListener(is);
-					
 
 					JLabel inputLabel = new JLabel("Input:");
 
@@ -553,6 +556,33 @@ public class Main {
 			statusLabel.setText("Memory: " + memory + ", Pointer: " + pointer + ", Awaiting an input......");
 		} else {
 			statusLabel.setText("Memory: " + memory + ", Pointer: " + pointer);
+		}
+	}
+
+	public static void highlight(int pointer, int bits) {
+		int index1 = 0;
+		int index2 = 0;
+		int bitSize = 0;
+		switch (bits) {
+			case 8:
+				bitSize = 4;
+				break;
+			case 16:
+				bitSize = 6;
+				break;
+			case 32:
+				bitSize = 11;
+				break;
+		}
+		
+		index1 = pointer * bitSize + (int) (pointer / 12);
+		index2 = (pointer * bitSize) + bitSize - 1 + (int) (pointer / 12);
+		Highlighter highlighter = memoryOutput.getHighlighter();
+		HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
+		try {
+			highlighter.addHighlight(index1, index2, painter);
+		} catch (BadLocationException e2) {
+			e2.printStackTrace();
 		}
 	}
 }
