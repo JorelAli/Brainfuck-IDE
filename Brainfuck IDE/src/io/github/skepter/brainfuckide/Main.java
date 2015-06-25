@@ -197,6 +197,7 @@ public class Main {
 					resetButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/arrow_refresh.png")));
 					resetButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
+							setStatusLabel(-1, false);
 							memoryOutput.setText("");
 							output.setText("");
 						}
@@ -552,11 +553,20 @@ public class Main {
 	}
 
 	public static void setStatusLabel(int pointer, boolean input) {
-		if (input) {
-			statusLabel.setText("Memory: " + memory + ", Pointer: " + pointer + ", Awaiting an input......");
+		if (pointer == -1) {
+			if (input) {
+				statusLabel.setText("Memory: " + memory + ", " + "Awaiting an input......");
+			} else {
+				statusLabel.setText("Memory: " + memory);
+			}
 		} else {
-			statusLabel.setText("Memory: " + memory + ", Pointer: " + pointer);
+			if (input) {
+				statusLabel.setText("Memory: " + memory + ", Pointer: " + pointer + ", Awaiting an input......");
+			} else {
+				statusLabel.setText("Memory: " + memory + ", Pointer: " + pointer);
+			}
 		}
+
 	}
 
 	public static void highlight(int pointer, int bits) {
@@ -574,7 +584,7 @@ public class Main {
 				bitSize = 11;
 				break;
 		}
-		
+
 		index1 = pointer * bitSize + (int) (pointer / 12);
 		index2 = (pointer * bitSize) + bitSize - 1 + (int) (pointer / 12);
 		Highlighter highlighter = memoryOutput.getHighlighter();
