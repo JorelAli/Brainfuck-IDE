@@ -62,6 +62,7 @@ public class Main {
 
 	private static int memory = DEFAULT_MEMORY;
 	private JTextField inputField;
+	private JTextFieldInputStream is;
 	private JTextField charInput;
 	private byte bits = 8;
 
@@ -181,7 +182,7 @@ public class Main {
 							runningThread = new Thread() {
 								@Override
 								public void run() {
-									new BrainfuckIntegrator(new BrainfuckEngine(memory, new JTextFieldInputStream(inputField), wrapping, bits), workspace.getText(), memoryOutput);
+									new BrainfuckIntegrator(new BrainfuckEngine(memory, is, wrapping, bits), workspace.getText(), memoryOutput);
 								}
 							};
 							runningThread.start();
@@ -229,6 +230,9 @@ public class Main {
 
 					inputField = new JTextField();
 					inputField.setColumns(10);
+					is = new JTextFieldInputStream(inputField);
+					inputField.addActionListener(is);
+					
 
 					JLabel inputLabel = new JLabel("Input:");
 

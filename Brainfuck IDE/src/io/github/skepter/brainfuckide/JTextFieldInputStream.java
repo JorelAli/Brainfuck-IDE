@@ -1,37 +1,51 @@
 package io.github.skepter.brainfuckide;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StreamTokenizer;
 
 import javax.swing.JTextField;
 
+public class JTextFieldInputStream extends InputStream implements ActionListener {
 
-public class JTextFieldInputStream extends InputStream {
-    byte[] contents;
-    int pointer = 0;
+	private JTextField textField;
+	private String str = null;
+	private int pos = 0;
 
-    public JTextFieldInputStream(final JTextField text) {
-    	contents = text.getText().getBytes();
-        pointer = 0;
-        
-        text.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if(e.getKeyChar()=='\n'){
-                    contents = text.getText().getBytes();
-                    pointer = 0;
-                    text.setText("");
-                }
-                super.keyReleased(e);
-            }
-        });
-    }
+	public JTextFieldInputStream(final JTextField text) {
+		textField = text;
+	}
 
-    @Override
-    public int read() throws IOException {
-        if(pointer >= contents.length) return -1;
-        return this.contents[pointer++];
-    }
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		str = textField.getText() + "\n";
+		pos = 0;
+		textField.setText("");
+		synchronized (this) {
+			this.notifyAll();
+		}
+	}
+
+	@Override
+	public int read() throws IOException {
+		if (str != null && pos == str.length()) {
+			str = null;
+			return StreamTokenizer.TT_EOF;
+		}
+		
+		while (str == null || pos >= str.length()) {
+			try {
+				synchronized(this) {
+					this.wait();
+				}
+			} catch(InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return str.charAt(pos++);
+	}
 
 }

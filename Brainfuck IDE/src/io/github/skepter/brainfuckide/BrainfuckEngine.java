@@ -208,10 +208,11 @@ public class BrainfuckEngine {
 				// the
 				// data pointer.
 				Main.setStatusLabel(dataPointer, true);
-				int inputValue;
-				while ((inputValue = consoleReader.read()) != -1) {
-					data[dataPointer] = (short) inputValue;
-				}
+//				int inputValue;
+//				while ((inputValue = consoleReader.read()) != -1) {
+//					data[dataPointer] = (short) inputValue;
+//				}
+				data[dataPointer] = (byte) consoleReader.read();
 				break;
 			case Token.BRACKET_LEFT:
 				if (data[dataPointer] == 0) {
