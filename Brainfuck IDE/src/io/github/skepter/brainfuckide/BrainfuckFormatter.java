@@ -30,33 +30,37 @@ public class BrainfuckFormatter {
 	
 	public void unformat() {
 		String str = Main.workspace.getText();
-		str = str.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", "");
-		Main.workspace.setText(str);
+		String code = str.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", "");
+		String comments = str.replaceAll("[\\.\\[\\]\\+\\-\\,\\>\\<]", "");
+		comments = comments.trim();
+		Main.workspace.setText(comments + "\n" + code);
 		Main.workspace.setCaretPosition(0);
 	}
 
 	public void format() {
 		formattedOutput = new StringBuilder();
 		String str = Main.workspace.getText();
-		str = str.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", "");
-		for (int charPointer = 0; charPointer < str.length(); charPointer++) {
+		String code = str.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", "");
+		String comments = str.replaceAll("[\\.\\[\\]\\+\\-\\,\\>\\<]", "");
+		comments = comments.trim();
+		for (int charPointer = 0; charPointer < code.length(); charPointer++) {
 
 			/* Catches exceptions with SIOOB */
 			char prev = '#';
 			try {
-				prev = str.charAt(charPointer - 1);
+				prev = code.charAt(charPointer - 1);
 			} catch (Exception e) {
 			}
 
 			char next = '#';
 			try {
-				next = str.charAt(charPointer + 1);
+				next = code.charAt(charPointer + 1);
 			} catch (Exception e) {
 			}
 
-			format(str.charAt(charPointer), prev, next);
+			format(code.charAt(charPointer), prev, next);
 		}
-		Main.workspace.setText(formattedOutput.toString());
+		Main.workspace.setText(comments + "\n" + formattedOutput.toString());
 		Main.workspace.setCaretPosition(0);
 	}
 
