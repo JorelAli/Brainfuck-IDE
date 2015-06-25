@@ -46,7 +46,6 @@ public class JTextFieldInputStream extends InputStream implements ActionListener
 		}
 		
 		char s = str.charAt(pos++);
-		System.out.println("READ: " + s);
 		return s;
 	}
 
