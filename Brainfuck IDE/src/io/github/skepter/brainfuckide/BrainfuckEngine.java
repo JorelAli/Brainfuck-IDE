@@ -204,6 +204,7 @@ public class BrainfuckEngine {
 				Main.output.setText(Main.output.getText() + (char) data[dataPointer]);
 				break;
 			case Token.INPUT:
+				System.out.println("INPUT CHAR");
 				// Accept one short of input, storing its value in the short at
 				// the
 				// data pointer.

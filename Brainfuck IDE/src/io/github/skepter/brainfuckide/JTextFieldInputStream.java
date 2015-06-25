@@ -20,7 +20,7 @@ public class JTextFieldInputStream extends InputStream implements ActionListener
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		str = textField.getText() + "\n";
+		str = textField.getText();
 		pos = 0;
 		textField.setText("");
 		synchronized (this) {
@@ -45,7 +45,9 @@ public class JTextFieldInputStream extends InputStream implements ActionListener
 			}
 		}
 		
-		return str.charAt(pos++);
+		char s = str.charAt(pos++);
+		System.out.println("READ: " + s);
+		return s;
 	}
 
 }
