@@ -172,9 +172,14 @@ public class BrainfuckEngine {
 				 * " on postion " + charPointer +
 				 * " higher than short max value."); }
 				 */
-
+				
 				if (data[dataPointer] == (long) Math.pow(2, bits) - 1) {
-					data[dataPointer] = 0;
+					if (wrapping) {
+						data[dataPointer] = 0;
+					} else {
+						data[dataPointer] = (long) Math.pow(2, bits) - 1;
+					}
+
 				} else {
 					data[dataPointer]++;
 				}
