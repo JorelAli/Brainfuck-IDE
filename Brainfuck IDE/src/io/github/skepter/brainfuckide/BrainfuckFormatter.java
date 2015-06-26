@@ -1,5 +1,8 @@
 package io.github.skepter.brainfuckide;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * BrainfuckFormatter designed to format brainfuck
  */
@@ -26,6 +29,82 @@ public class BrainfuckFormatter {
 		public final static char INPUT = ',';
 		public final static char BRACKET_LEFT = '[';
 		public final static char BRACKET_RIGHT = ']';
+	}
+	
+	public void brainfuckToOok() {
+		String str = Main.workspace.getText();
+		String code = str.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", "");
+		String comments = str.replaceAll("[\\.\\[\\]\\+\\-\\,\\>\\<]", "");
+		comments = comments.trim();
+
+		String finalCode = "";
+		for (char c : code.toCharArray()) {
+			switch (c) {
+				case Token.NEXT:
+					finalCode = finalCode + "Ook. Ook? ";
+					break;
+				case Token.PREVIOUS:
+					finalCode = finalCode + "Ook? Ook. ";
+					break;
+				case Token.MINUS:
+					finalCode = finalCode + "Ook! Ook! ";
+					break;
+				case Token.PLUS:
+					finalCode = finalCode + "Ook. Ook. ";
+					break;
+				case Token.OUTPUT:
+					finalCode = finalCode + "Ook! Ook. ";
+					break;
+				case Token.INPUT:
+					finalCode = finalCode + "Ook. Ook! ";
+					break;
+				case Token.BRACKET_LEFT:
+					finalCode = finalCode + "Ook! Ook? ";
+					break;
+				case Token.BRACKET_RIGHT:
+					finalCode = finalCode + "Ook? Ook! ";
+					break;
+			}
+		}
+		code = finalCode;
+
+		Main.workspace.setText(comments + "\n" + code);
+		Main.workspace.setCaretPosition(0);
+	}
+	
+	public void ookToBrainfuck() {
+		String str = Main.workspace.getText();
+		String comments = str.replaceAll("(Ook)[.!?]", "");
+		comments = comments.trim();
+
+		String finalCode = "";
+		finalCode = str.replace(comments, "");
+		finalCode = finalCode.replace("  ", "");
+		String out = "";
+		List<String> arr = getParts(finalCode, 10);
+		 
+		for(String s : arr) {
+			s = s.trim();
+			if(s.equals("Ook! Ook?"))
+				out = out + "[";
+			if(s.equals("Ook? Ook!"))
+				out = out + "]";
+			if(s.equals("Ook! Ook."))
+				out = out + ".";
+			if(s.equals("Ook. Ook!"))
+				out = out + ",";
+			if(s.equals("Ook. Ook?"))
+				out = out + ">";
+			if(s.equals("Ook? Ook."))
+				out = out + "<";
+			if(s.equals("Ook! Ook!"))
+				out = out + "-";
+			if(s.equals("Ook. Ook."))
+				out = out + "+";
+		}
+		
+		Main.workspace.setText(comments + "\n" + out);
+		Main.workspace.setCaretPosition(0);
 	}
 	
 	public void unformat() {
@@ -120,5 +199,14 @@ public class BrainfuckFormatter {
 		for (int i = 0; i < indentationLevel; i++)
 			str = str + "  ";
 		return str;
+	}
+	
+	private List<String> getParts(String string, int partitionSize) {
+		List<String> parts = new ArrayList<String>();
+		int len = string.length();
+		for (int i = 0; i < len; i += partitionSize) {
+			parts.add(string.substring(i, Math.min(len, i + partitionSize)));
+		}
+		return parts;
 	}
 }

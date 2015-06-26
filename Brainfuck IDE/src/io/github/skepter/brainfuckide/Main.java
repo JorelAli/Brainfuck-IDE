@@ -43,6 +43,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
+import javax.swing.JSeparator;
 
 /**
  * Brainfuck IDE designed to run and debug Brainfuck code Extra credit to Fabian
@@ -202,7 +203,7 @@ public class Main {
 							output.setText("");
 						}
 					});
-					
+
 					JButton stopButton = new JButton("Stop");
 					stopButton.addActionListener(new ActionListener() {
 						@SuppressWarnings("deprecation")
@@ -313,8 +314,6 @@ public class Main {
 							}
 						}
 					});
-
-					
 
 					/* Cell size (bits) */
 
@@ -443,8 +442,8 @@ public class Main {
 		JMenuBar menuBar = new JMenuBar();
 		mainFrame.setJMenuBar(menuBar);
 
-		JMenu mnNewMenu = new JMenu("File");
-		menuBar.add(mnNewMenu);
+		JMenu fileMenu = new JMenu("File");
+		menuBar.add(fileMenu);
 
 		JMenuItem newItem = new JMenuItem("New file");
 		newItem.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/add.png")));
@@ -483,7 +482,7 @@ public class Main {
 				workspace.setText("");
 			}
 		});
-		mnNewMenu.add(newItem);
+		fileMenu.add(newItem);
 
 		JMenuItem openItem = new JMenuItem("Open file");
 		openItem.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/folder_page_white.png")));
@@ -513,7 +512,7 @@ public class Main {
 				}
 			}
 		});
-		mnNewMenu.add(openItem);
+		fileMenu.add(openItem);
 
 		JMenuItem saveItem = new JMenuItem("Save file");
 		saveItem.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/disk.png")));
@@ -557,7 +556,35 @@ public class Main {
 				}
 			}
 		});
-		mnNewMenu.add(saveItem);
+		fileMenu.add(saveItem);
+
+		JMenu convertersMenu = new JMenu("Convert");
+		menuBar.add(convertersMenu);
+
+		JMenuItem BrainfuckToOok = new JMenuItem("Brainfuck to Ook!");
+		BrainfuckToOok.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new BrainfuckFormatter().brainfuckToOok();
+			}
+		});
+		convertersMenu.add(BrainfuckToOok);
+
+		JMenuItem OokToBrainfuck = new JMenuItem("Ook! to Brainfuck");
+		OokToBrainfuck.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new BrainfuckFormatter().ookToBrainfuck();
+			}
+		});
+		convertersMenu.add(OokToBrainfuck);
+
+		JSeparator separator = new JSeparator();
+		convertersMenu.add(separator);
+
+		JMenuItem BrainfuckToTroll = new JMenuItem("Brainfuck to TrollScript");
+		convertersMenu.add(BrainfuckToTroll);
+
+		JMenuItem TrollToBrainfuck = new JMenuItem("TrollScript to Brainfuck");
+		convertersMenu.add(TrollToBrainfuck);
 
 	}
 
