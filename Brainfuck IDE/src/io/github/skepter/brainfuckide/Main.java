@@ -202,6 +202,16 @@ public class Main {
 							output.setText("");
 						}
 					});
+					
+					JButton stopButton = new JButton("Stop");
+					stopButton.addActionListener(new ActionListener() {
+						@SuppressWarnings("deprecation")
+						public void actionPerformed(ActionEvent arg0) {
+							setStatusLabel(-1, false);
+							runningThread.stop();
+						}
+					});
+					stopButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/stop.png")));
 
 					/* Set memory section */
 
@@ -304,8 +314,7 @@ public class Main {
 						}
 					});
 
-					JButton stopButton = new JButton("Stop");
-					stopButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/stop.png")));
+					
 
 					/* Cell size (bits) */
 
