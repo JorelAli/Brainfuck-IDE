@@ -301,6 +301,7 @@ public class Main {
 					});
 
 					final JToggleButton wrappingButton = new JToggleButton("Wrapping mode enabled");
+					wrappingButton.setSelected(true);
 					wrappingButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							if (wrappingButton.isSelected()) {
