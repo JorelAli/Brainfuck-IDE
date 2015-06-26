@@ -30,7 +30,7 @@ public class BrainfuckFormatter {
 		public final static char BRACKET_LEFT = '[';
 		public final static char BRACKET_RIGHT = ']';
 	}
-	
+
 	public void brainfuckToOok() {
 		String str = Main.workspace.getText();
 		String code = str.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", "");
@@ -71,7 +71,7 @@ public class BrainfuckFormatter {
 		Main.workspace.setText(comments + "\n" + code);
 		Main.workspace.setCaretPosition(0);
 	}
-	
+
 	public void ookToBrainfuck() {
 		String str = Main.workspace.getText();
 		String comments = str.replaceAll("(Ook)[.!?]", "");
@@ -82,31 +82,72 @@ public class BrainfuckFormatter {
 		finalCode = finalCode.replace("  ", "");
 		String out = "";
 		List<String> arr = getParts(finalCode, 10);
-		 
-		for(String s : arr) {
+
+		for (String s : arr) {
 			s = s.trim();
-			if(s.equals("Ook! Ook?"))
+			if (s.equals("Ook! Ook?"))
 				out = out + "[";
-			if(s.equals("Ook? Ook!"))
+			if (s.equals("Ook? Ook!"))
 				out = out + "]";
-			if(s.equals("Ook! Ook."))
+			if (s.equals("Ook! Ook."))
 				out = out + ".";
-			if(s.equals("Ook. Ook!"))
+			if (s.equals("Ook. Ook!"))
 				out = out + ",";
-			if(s.equals("Ook. Ook?"))
+			if (s.equals("Ook. Ook?"))
 				out = out + ">";
-			if(s.equals("Ook? Ook."))
+			if (s.equals("Ook? Ook."))
 				out = out + "<";
-			if(s.equals("Ook! Ook!"))
+			if (s.equals("Ook! Ook!"))
 				out = out + "-";
-			if(s.equals("Ook. Ook."))
+			if (s.equals("Ook. Ook."))
 				out = out + "+";
 		}
-		
+
 		Main.workspace.setText(comments + "\n" + out);
 		Main.workspace.setCaretPosition(0);
 	}
-	
+
+	public void brainfuckToTrollscript() {
+		String str = Main.workspace.getText();
+		String code = str.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", "");
+		String comments = str.replaceAll("[\\.\\[\\]\\+\\-\\,\\>\\<]", "");
+		comments = comments.trim();
+
+		String finalCode = "";
+		for (char c : code.toCharArray()) {
+			switch (c) {
+				case Token.NEXT:
+					finalCode = finalCode + "ooo";
+					break;
+				case Token.PREVIOUS:
+					finalCode = finalCode + "ool";
+					break;
+				case Token.MINUS:
+					finalCode = finalCode + "oll";
+					break;
+				case Token.PLUS:
+					finalCode = finalCode + "olo";
+					break;
+				case Token.OUTPUT:
+					finalCode = finalCode + "loo";
+					break;
+				case Token.INPUT:
+					finalCode = finalCode + "lol";
+					break;
+				case Token.BRACKET_LEFT:
+					finalCode = finalCode + "llo";
+					break;
+				case Token.BRACKET_RIGHT:
+					finalCode = finalCode + "ll";
+					break;
+			}
+		}
+		code = finalCode;
+
+		Main.workspace.setText(comments + "\n" + "tro" + code + "ll");
+		Main.workspace.setCaretPosition(0);
+	}
+
 	public void unformat() {
 		String str = Main.workspace.getText();
 		String code = str.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", "");
@@ -200,7 +241,7 @@ public class BrainfuckFormatter {
 			str = str + "  ";
 		return str;
 	}
-	
+
 	private List<String> getParts(String string, int partitionSize) {
 		List<String> parts = new ArrayList<String>();
 		int len = string.length();

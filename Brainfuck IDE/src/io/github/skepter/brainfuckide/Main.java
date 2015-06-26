@@ -581,6 +581,11 @@ public class Main {
 		convertersMenu.add(separator);
 
 		JMenuItem BrainfuckToTroll = new JMenuItem("Brainfuck to TrollScript");
+		BrainfuckToTroll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new BrainfuckFormatter().brainfuckToTrollscript();
+			}
+		});
 		convertersMenu.add(BrainfuckToTroll);
 
 		JMenuItem TrollToBrainfuck = new JMenuItem("TrollScript to Brainfuck");
