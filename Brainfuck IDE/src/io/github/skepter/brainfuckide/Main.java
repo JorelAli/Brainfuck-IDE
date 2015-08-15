@@ -591,18 +591,6 @@ public class Main {
 
 		JMenuItem TrollToBrainfuck = new JMenuItem("TrollScript to Brainfuck");
 		convertersMenu.add(TrollToBrainfuck);
-		
-		JMenu helpMenu = new JMenu("Help");
-		menuBar.add(helpMenu);
-		
-		JMenuItem helpItem = new JMenuItem("How to use");
-		helpItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				HelpMenu frame = new HelpMenu();
-				frame.setVisible(true);
-			}
-		});
-		helpMenu.add(helpItem);
 
 	}
 

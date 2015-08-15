@@ -24,9 +24,9 @@ public class BrainfuckIntegrator {
 		interpret();
 		debugInfo();
 	}
-
+	
 	private void setBuilderLength() {
-		switch (bits) {
+		switch(bits) {
 			case 8:
 				builderLength = 48;
 				format = "%03d";
@@ -41,45 +41,41 @@ public class BrainfuckIntegrator {
 				break;
 		}
 	}
-
+	
 	private void convert() {
 		/* Converts Ook! back to brainfuck */
-
-		if (code.contains("Ook")) {
-
-			String comments = code.replaceAll("(Ook)[.!?]", "");
-			comments = comments.trim();
-			String finalCode = "";
-			finalCode = code.replace(comments, "");
-			finalCode = finalCode.replace("  ", "");
-			String out = "";
-			List<String> arr = getParts(finalCode, 10);
-
-			for (String s : arr) {
-				s = s.trim();
-				if (s.equals("Ook! Ook?"))
-					out = out + "[";
-				if (s.equals("Ook? Ook!"))
-					out = out + "]";
-				if (s.equals("Ook! Ook."))
-					out = out + ".";
-				if (s.equals("Ook. Ook!"))
-					out = out + ",";
-				if (s.equals("Ook. Ook?"))
-					out = out + ">";
-				if (s.equals("Ook? Ook."))
-					out = out + "<";
-				if (s.equals("Ook! Ook!"))
-					out = out + "-";
-				if (s.equals("Ook. Ook."))
-					out = out + "+";
-			}
-			code = out;
+		
+		String comments = code.replaceAll("(Ook)[.!?]", "");
+		comments = comments.trim();
+		String finalCode = "";
+		finalCode = code.replace(comments, "");
+		finalCode = finalCode.replace("  ", "");
+		String out = "";
+		List<String> arr = getParts(finalCode, 10);
+		 
+		for(String s : arr) {
+			s = s.trim();
+			if(s.equals("Ook! Ook?"))
+				out = out + "[";
+			if(s.equals("Ook? Ook!"))
+				out = out + "]";
+			if(s.equals("Ook! Ook."))
+				out = out + ".";
+			if(s.equals("Ook. Ook!"))
+				out = out + ",";
+			if(s.equals("Ook. Ook?"))
+				out = out + ">";
+			if(s.equals("Ook? Ook."))
+				out = out + "<";
+			if(s.equals("Ook! Ook!"))
+				out = out + "-";
+			if(s.equals("Ook. Ook."))
+				out = out + "+";
 		}
+		code = out;
 	}
 
 	private void interpret() {
-		System.out.println(code);
 		try {
 			engine.interpretWithoutReset(code);
 		} catch (Exception e) {
@@ -101,7 +97,7 @@ public class BrainfuckIntegrator {
 				memoryOutput.setText(part);
 			memoryOutput.setCaretPosition(0);
 		}
-
+		
 		Main.highlight(engine.dataPointer, bits);
 	}
 
