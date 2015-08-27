@@ -29,21 +29,25 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Element;
 import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
-import javax.swing.JSeparator;
 
 /**
  * Brainfuck IDE designed to run and debug Brainfuck code Extra credit to Fabian
@@ -128,6 +132,55 @@ public class Main {
 		mainFrame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		mainPanel.setLayout(new BorderLayout(0, 0));
 
+		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
+		mainPanel.add(toolBar, BorderLayout.NORTH);
+
+		JButton runButton = new JButton("Run!");
+		toolBar.add(runButton);
+		runButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/bullet_go.png")));
+
+		JButton stopButton = new JButton("Stop");
+		toolBar.add(stopButton);
+		stopButton.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
+			public void actionPerformed(ActionEvent arg0) {
+				setStatusLabel(-1, false);
+				runningThread.stop();
+			}
+		});
+		stopButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/stop.png")));
+
+		JButton resetButton = new JButton("Reset");
+		toolBar.add(resetButton);
+		resetButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/arrow_refresh.png")));
+		
+		JButton btnNewButton = new JButton("Debug");
+		btnNewButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/bug_go.png")));
+		toolBar.add(btnNewButton);
+		resetButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setStatusLabel(-1, false);
+				memoryOutput.setText("");
+				output.setText("");
+			}
+		});
+		runButton.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
+			public void actionPerformed(ActionEvent arg0) {
+				if (runningThread != null) {
+					runningThread.stop();
+				}
+				runningThread = new Thread() {
+					@Override
+					public void run() {
+						new BrainfuckIntegrator(new BrainfuckEngine(memory, is, wrapping, bits), workspace.getText(), memoryOutput);
+					}
+				};
+				runningThread.start();
+			}
+		});
+
 		memoryOutput = new JTextArea("");
 		memoryOutput.setEditable(false);
 
@@ -145,9 +198,39 @@ public class Main {
 					leftScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 					splitPane.setLeftComponent(workspaceOutputPane);
 					workspace = new JTextArea();
+					final JTextArea lines = new JTextArea("1");
+					lines.setBackground(Color.LIGHT_GRAY);
+					lines.setEditable(false);
+					workspace.getDocument().addDocumentListener(new DocumentListener(){
+						public String getText(){
+							int caretPosition = workspace.getDocument().getLength();
+							Element root = workspace.getDocument().getDefaultRootElement();
+							String text = "1" + System.getProperty("line.separator");
+							for(int i = 2; i < root.getElementIndex( caretPosition ) + 2; i++){
+								text += i + System.getProperty("line.separator");
+							}
+							return text;
+						}
+						@Override
+						public void changedUpdate(DocumentEvent de) {
+							lines.setText(getText());
+						}
+			 
+						@Override
+						public void insertUpdate(DocumentEvent de) {
+							lines.setText(getText());
+						}
+			 
+						@Override
+						public void removeUpdate(DocumentEvent de) {
+							lines.setText(getText());
+						}
+			 
+					});
 					workspace.setLineWrap(true);
 					workspace.setText("Hello World!\n++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.");
 					leftScrollPane.setViewportView(workspace);
+					leftScrollPane.setRowHeaderView(lines);
 
 					workspaceOutputPane.setLeftComponent(leftScrollPane);
 					workspaceOutputPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -173,46 +256,8 @@ public class Main {
 
 					JPanel devPanel = new JPanel();
 					devPanel.setBackground(new Color(135, 206, 250));
-					devPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Controls", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
+					devPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Settings", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
 					secondSplitPane.setLeftComponent(devPanel);
-
-					JButton runButton = new JButton("Run!");
-					runButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/bullet_go.png")));
-					runButton.addActionListener(new ActionListener() {
-						@SuppressWarnings("deprecation")
-						public void actionPerformed(ActionEvent arg0) {
-							if (runningThread != null) {
-								runningThread.stop();
-							}
-							runningThread = new Thread() {
-								@Override
-								public void run() {
-									new BrainfuckIntegrator(new BrainfuckEngine(memory, is, wrapping, bits), workspace.getText(), memoryOutput);
-								}
-							};
-							runningThread.start();
-						}
-					});
-
-					JButton resetButton = new JButton("Reset");
-					resetButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/arrow_refresh.png")));
-					resetButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							setStatusLabel(-1, false);
-							memoryOutput.setText("");
-							output.setText("");
-						}
-					});
-
-					JButton stopButton = new JButton("Stop");
-					stopButton.addActionListener(new ActionListener() {
-						@SuppressWarnings("deprecation")
-						public void actionPerformed(ActionEvent arg0) {
-							setStatusLabel(-1, false);
-							runningThread.stop();
-						}
-					});
-					stopButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/stop.png")));
 
 					/* Set memory section */
 
@@ -368,10 +413,6 @@ public class Main {
 																			.addGroup(
 																					gl_devPanel
 																							.createParallelGroup(Alignment.LEADING)
-																							.addGroup(
-																									gl_devPanel.createSequentialGroup().addComponent(runButton, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-																											.addPreferredGap(ComponentPlacement.RELATED).addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
-																											.addPreferredGap(ComponentPlacement.RELATED).addComponent(resetButton, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
 																							.addGroup(gl_devPanel.createSequentialGroup().addGap(63).addComponent(cellSize16).addGap(18).addComponent(cellSize32))
 																							.addGroup(
 																									gl_devPanel
@@ -382,12 +423,11 @@ public class Main {
 																															.addComponent(setMemoryLabel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 																											.addGroup(
 																													gl_devPanel
-																															.createParallelGroup(Alignment.LEADING)
+																															.createParallelGroup(Alignment.TRAILING)
 																															.addGroup(
 																																	gl_devPanel.createSequentialGroup().addGap(18)
 																																			.addComponent(cellCount, GroupLayout.PREFERRED_SIZE, 235, GroupLayout.PREFERRED_SIZE))
 																															.addGroup(
-																																	Alignment.TRAILING,
 																																	gl_devPanel.createSequentialGroup().addPreferredGap(ComponentPlacement.RELATED).addComponent(unformatButton)
 																																			.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 																																			.addComponent(wrappingButton))))).addGap(11))
@@ -409,9 +449,7 @@ public class Main {
 					gl_devPanel.setVerticalGroup(gl_devPanel.createParallelGroup(Alignment.LEADING).addGroup(
 							gl_devPanel
 									.createSequentialGroup()
-									.addContainerGap()
-									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(runButton).addComponent(stopButton).addComponent(resetButton))
-									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGap(42)
 									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(formatButton).addComponent(wrappingButton).addComponent(unformatButton))
 									.addPreferredGap(ComponentPlacement.UNRELATED)
 									.addGroup(gl_devPanel.createParallelGroup(Alignment.BASELINE).addComponent(setMemoryLabel).addComponent(cellCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -591,10 +629,10 @@ public class Main {
 
 		JMenuItem TrollToBrainfuck = new JMenuItem("TrollScript to Brainfuck");
 		convertersMenu.add(TrollToBrainfuck);
-		
+
 		JMenu helpMenu = new JMenu("Help");
 		menuBar.add(helpMenu);
-		
+
 		JMenuItem helpItem = new JMenuItem("How to use");
 		helpItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
