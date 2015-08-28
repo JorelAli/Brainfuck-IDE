@@ -50,33 +50,42 @@ import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
 
 /**
- * Brainfuck IDE designed to run and debug Brainfuck code Extra credit to Fabian
- * M for BrainfuckEngine.java https://github.com/fabianm
+ * Brainfuck IDE designed to run and debug Brainfuck code Extra credit to
+ * FabianM for BrainfuckEngine.java https://github.com/fabianm
  * 
  * @author Skepter
  *
  */
 public class Main {
 
+	/* Components */
 	private JFrame mainFrame;
 	public static JTextArea workspace;
 	private static JTextArea memoryOutput;
 	private JTextField cellCount;
 	private static JLabel statusLabel;
 	public static JTextArea output;
+
+	/* Input components */
+	private JTextField inputField;
+	private JTextFieldInputStream is;
+	private JTextField charInput;
+
 	private final static int DEFAULT_MEMORY = 384;
+	private static int memory = DEFAULT_MEMORY;
+
 	private boolean wrapping = true;
 	private Thread runningThread;
 	private static File file;
 
-	private static int memory = DEFAULT_MEMORY;
-	private JTextField inputField;
-	private JTextFieldInputStream is;
-	private JTextField charInput;
 	private byte bits = 8;
 
+	/* Debugging stuff */
 	private int index;
 	private int maxIndex;
+	private boolean debug;
+	
+	private String tempWorkspace;
 
 	/**
 	 * Launch the application.
@@ -158,11 +167,18 @@ public class Main {
 		toolBar.add(resetButton);
 		resetButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/arrow_refresh.png")));
 
+		debug = false;
 		JButton debugButton = new JButton("Debug");
 		debugButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				index = 0;
+				debug = true;
+				/* Temporarily stores all of the data
+				 * Strips comments and formats code */
+				tempWorkspace = workspace.getText();
+				workspace.setText(tempWorkspace.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", ""));
 				maxIndex = workspace.getText().length();
+				new BrainfuckFormatter().format();
+				index = 0;
 
 				Highlighter highlighter = workspace.getHighlighter();
 				HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
@@ -180,18 +196,29 @@ public class Main {
 		JButton btnNewButton = new JButton("Step");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				index++;
-				if(index == maxIndex) {
-					System.out.println("End of max index.");
-					return;
-				}
-				Highlighter highlighter = workspace.getHighlighter();
-				highlighter.removeAllHighlights();
-				HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
-				try {
-					highlighter.addHighlight(index, index + 1, painter);
-				} catch (BadLocationException e2) {
-					e2.printStackTrace();
+				if (debug) {
+										
+					index++;
+					if (index == maxIndex) {
+						debug = false;
+						System.out.println("End of max index.");
+						return;
+					}
+					
+					/* Skips whitespace */
+					while(workspace.getText().toCharArray()[index] == ' ' || workspace.getText().toCharArray()[index] == '\n') {
+						index++;
+					}
+
+					/* Highlights the next character*/
+					Highlighter highlighter = workspace.getHighlighter();
+					highlighter.removeAllHighlights();
+					HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
+					try {
+						highlighter.addHighlight(index, index + 1, painter);
+					} catch (BadLocationException e2) {
+						e2.printStackTrace();
+					}
 				}
 			}
 		});
