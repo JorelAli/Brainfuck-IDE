@@ -75,6 +75,9 @@ public class Main {
 	private JTextField charInput;
 	private byte bits = 8;
 
+	private int index;
+	private int maxIndex;
+
 	/**
 	 * Launch the application.
 	 */
@@ -158,10 +161,41 @@ public class Main {
 		JButton debugButton = new JButton("Debug");
 		debugButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				index = 0;
+				maxIndex = workspace.getText().length();
+
+				Highlighter highlighter = workspace.getHighlighter();
+				HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
+				try {
+					highlighter.addHighlight(index, index + 1, painter);
+				} catch (BadLocationException e2) {
+					e2.printStackTrace();
+				}
+
 			}
 		});
 		debugButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/bug_go.png")));
 		toolBar.add(debugButton);
+
+		JButton btnNewButton = new JButton("Step");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				index++;
+				if(index == maxIndex) {
+					System.out.println("End of max index.");
+					return;
+				}
+				Highlighter highlighter = workspace.getHighlighter();
+				highlighter.removeAllHighlights();
+				HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
+				try {
+					highlighter.addHighlight(index, index + 1, painter);
+				} catch (BadLocationException e2) {
+					e2.printStackTrace();
+				}
+			}
+		});
+		toolBar.add(btnNewButton);
 		resetButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setStatusLabel(-1, false);
