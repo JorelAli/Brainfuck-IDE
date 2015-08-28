@@ -80,7 +80,11 @@ public class Main {
 
 	private byte bits = 8;
 
-	/* Debugging stuff */
+	/* Debugging stuff 
+	 * Move this to a new class to handle all of the debugging 
+	 * Set the class to null in the step.
+	 * Invoke the class in debug, and keep 
+	 * the value not null, until the debugger ends or is forced. */
 	private int index;
 	private int maxIndex;
 	private boolean debug;
