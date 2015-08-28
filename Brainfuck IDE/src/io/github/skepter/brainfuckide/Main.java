@@ -154,10 +154,14 @@ public class Main {
 		JButton resetButton = new JButton("Reset");
 		toolBar.add(resetButton);
 		resetButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/arrow_refresh.png")));
-		
-		JButton btnNewButton = new JButton("Debug");
-		btnNewButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/bug_go.png")));
-		toolBar.add(btnNewButton);
+
+		JButton debugButton = new JButton("Debug");
+		debugButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		debugButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/bug_go.png")));
+		toolBar.add(debugButton);
 		resetButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setStatusLabel(-1, false);
@@ -201,31 +205,32 @@ public class Main {
 					final JTextArea lines = new JTextArea("1");
 					lines.setBackground(Color.LIGHT_GRAY);
 					lines.setEditable(false);
-					workspace.getDocument().addDocumentListener(new DocumentListener(){
-						public String getText(){
+					workspace.getDocument().addDocumentListener(new DocumentListener() {
+						public String getText() {
 							int caretPosition = workspace.getDocument().getLength();
 							Element root = workspace.getDocument().getDefaultRootElement();
 							String text = "1" + System.getProperty("line.separator");
-							for(int i = 2; i < root.getElementIndex( caretPosition ) + 2; i++){
+							for (int i = 2; i < root.getElementIndex(caretPosition) + 2; i++) {
 								text += i + System.getProperty("line.separator");
 							}
 							return text;
 						}
+
 						@Override
 						public void changedUpdate(DocumentEvent de) {
 							lines.setText(getText());
 						}
-			 
+
 						@Override
 						public void insertUpdate(DocumentEvent de) {
 							lines.setText(getText());
 						}
-			 
+
 						@Override
 						public void removeUpdate(DocumentEvent de) {
 							lines.setText(getText());
 						}
-			 
+
 					});
 					workspace.setLineWrap(true);
 					workspace.setText("Hello World!\n++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.");
