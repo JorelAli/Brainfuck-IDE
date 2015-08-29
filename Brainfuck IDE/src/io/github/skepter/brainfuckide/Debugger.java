@@ -200,7 +200,12 @@ public class Debugger {
 				if (data[dataPointer] == 0) {
 					int i = 1;
 					while (i > 0) {
-						char c2 = chars[++charPointer];
+						/* Skips whitespace */
+						int indexClone = index;
+						while (workspace.getText().charAt(indexClone) == ' ' || workspace.getText().charAt(indexClone) == '\n') {
+							indexClone++;
+						}
+						char c2 = chars[++indexClone];
 						if (c2 == Token.BRACKET_LEFT)
 							i++;
 						else if (c2 == Token.BRACKET_RIGHT)
@@ -211,7 +216,11 @@ public class Debugger {
 			case Token.BRACKET_RIGHT:
 				int i = 1;
 				while (i > 0) {
-					char c2 = chars[--charPointer];
+					int indexClone = index;
+					while (workspace.getText().charAt(indexClone) == ' ' || workspace.getText().charAt(indexClone) == '\n') {
+						indexClone++;
+					}
+					char c2 = chars[--indexClone];
 					if (c2 == Token.BRACKET_LEFT)
 						i--;
 					else if (c2 == Token.BRACKET_RIGHT)
