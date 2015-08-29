@@ -215,12 +215,12 @@ public class Debugger {
 				break;
 			case Token.BRACKET_RIGHT:
 				int i = 1;
+				int indexClone = index;
 				while (i > 0) {
-					int indexClone = index;
 					while (workspace.getText().charAt(indexClone) == ' ' || workspace.getText().charAt(indexClone) == '\n') {
-						indexClone++;
+						indexClone--;
 					}
-					char c2 = chars[--indexClone];
+					char c2 = chars[indexClone];
 					if (c2 == Token.BRACKET_LEFT)
 						i--;
 					else if (c2 == Token.BRACKET_RIGHT)
