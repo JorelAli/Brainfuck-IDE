@@ -36,6 +36,7 @@ public class Debugger {
 	private JTextArea workspace;
 	private String tempWorkspace;
 	private JTextArea memoryOutput;
+	private char currentChar;
 
 	/* Memory output */
 
@@ -75,7 +76,7 @@ public class Debugger {
 		maxIndex = workspace.getText().length();
 		new BrainfuckFormatter().format();
 		index = 0;
-
+		currentChar = workspace.getText().charAt(index);
 		Highlighter highlighter = workspace.getHighlighter();
 		HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
 		try {
@@ -98,9 +99,10 @@ public class Debugger {
 		while (workspace.getText().charAt(index) == ' ' || workspace.getText().charAt(index) == '\n') {
 			index++;
 		}
+		currentChar = workspace.getText().charAt(index);
 
 		try {
-			interpret(workspace.getText().charAt(index), workspace.getText().toCharArray());
+			interpret(currentChar, workspace.getText().toCharArray());
 			debugInfo();
 		} catch (Exception e) {
 			e.printStackTrace();
