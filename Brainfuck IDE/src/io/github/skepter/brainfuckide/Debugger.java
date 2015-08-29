@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JTextArea;
 import javax.swing.text.BadLocationException;
@@ -33,14 +35,37 @@ public class Debugger {
 	private int maxIndex;
 	private JTextArea workspace;
 	private String tempWorkspace;
+	private JTextArea memoryOutput;
+
+	/* Memory output */
+
+	private int builderLength;
+	private String format;
 
 	public Debugger(JTextArea workspace, BrainfuckEngine engine, JTextArea memoryOutput) {
 		this.workspace = workspace;
+		this.memoryOutput = memoryOutput;
+		workspace.setEditable(false);
 
 		/* Loads data from engine */
 		data = engine.data;
 		consoleReader = engine.consoleReader;
 		bits = engine.bits;
+
+		switch (bits) {
+			case 8:
+				builderLength = 48;
+				format = "%03d";
+				break;
+			case 16:
+				builderLength = 72;
+				format = "%05d";
+				break;
+			case 32:
+				builderLength = 132;
+				format = "%010d";
+				break;
+		}
 
 		/*
 		 * Temporarily stores all of the data Strips comments and formats code
@@ -62,7 +87,9 @@ public class Debugger {
 
 	public boolean step() {
 		index++;
-		if (index == maxIndex) {
+		System.out.println(index);
+		System.out.println(maxIndex);
+		if (index == maxIndex - 1) {
 			System.out.println("End of max index.");
 			return true;
 		}
@@ -74,6 +101,7 @@ public class Debugger {
 
 		try {
 			interpret(workspace.getText().charAt(index), workspace.getText().toCharArray());
+			debugInfo();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -193,6 +221,35 @@ public class Debugger {
 				break;
 		}
 		columnCount++;
+	}
+
+	private void debugInfo() {
+		memoryOutput.setText("");
+		Main.setStatusLabel(dataPointer, false);
+
+		/* Formats it into a nice grid */
+		StringBuilder builder = new StringBuilder();
+		for (long l : data) {
+			builder.append(String.format(format, l)).append(" ");
+		}
+		for (String part : getParts(builder.toString(), builderLength)) {
+			if (!(memoryOutput.getText().equals("")))
+				memoryOutput.setText(memoryOutput.getText() + "\n" + part);
+			else
+				memoryOutput.setText(part);
+			memoryOutput.setCaretPosition(0);
+		}
+
+		Main.highlight(dataPointer, bits);
+	}
+
+	private List<String> getParts(String string, int partitionSize) {
+		List<String> parts = new ArrayList<String>();
+		int len = string.length();
+		for (int i = 0; i < len; i += partitionSize) {
+			parts.add(string.substring(i, Math.min(len, i + partitionSize)));
+		}
+		return parts;
 	}
 
 }
