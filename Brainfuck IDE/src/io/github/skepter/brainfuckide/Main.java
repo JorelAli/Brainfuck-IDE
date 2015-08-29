@@ -80,16 +80,12 @@ public class Main {
 
 	private byte bits = 8;
 
-	/* Debugging stuff 
-	 * Move this to a new class to handle all of the debugging 
-	 * Set the class to null in the step.
-	 * Invoke the class in debug, and keep 
-	 * the value not null, until the debugger ends or is forced. */
-	private int index;
-	private int maxIndex;
-	private boolean debug;
-	
-	private String tempWorkspace;
+	/*
+	 * Debugging stuff Move this to a new class to handle all of the debugging
+	 * Set the class to null in the step. Invoke the class in debug, and keep
+	 * the value not null, until the debugger ends or is forced.
+	 */
+	private Debugger debugger;
 
 	/**
 	 * Launch the application.
@@ -171,62 +167,25 @@ public class Main {
 		toolBar.add(resetButton);
 		resetButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/arrow_refresh.png")));
 
-		debug = false;
 		JButton debugButton = new JButton("Debug");
 		debugButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				debug = true;
-				/* Temporarily stores all of the data
-				 * Strips comments and formats code */
-				tempWorkspace = workspace.getText();
-				workspace.setText(tempWorkspace.replaceAll("[^\\.\\[\\]\\+\\-\\,\\>\\<]", ""));
-				maxIndex = workspace.getText().length();
-				new BrainfuckFormatter().format();
-				index = 0;
-
-				Highlighter highlighter = workspace.getHighlighter();
-				HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
-				try {
-					highlighter.addHighlight(index, index + 1, painter);
-				} catch (BadLocationException e2) {
-					e2.printStackTrace();
-				}
-
+				debugger = new Debugger(workspace, new BrainfuckEngine(memory, is, wrapping, bits), memoryOutput);
 			}
 		});
 		debugButton.setIcon(new ImageIcon(Main.class.getResource("/io/github/skepter/brainfuckide/icons/bug_go.png")));
 		toolBar.add(debugButton);
 
-		JButton btnNewButton = new JButton("Step");
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton stepButton = new JButton("Step");
+		stepButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (debug) {
-										
-					index++;
-					if (index == maxIndex) {
-						debug = false;
-						System.out.println("End of max index.");
-						return;
-					}
-					
-					/* Skips whitespace */
-					while(workspace.getText().toCharArray()[index] == ' ' || workspace.getText().toCharArray()[index] == '\n') {
-						index++;
-					}
-
-					/* Highlights the next character*/
-					Highlighter highlighter = workspace.getHighlighter();
-					highlighter.removeAllHighlights();
-					HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.LIGHT_GRAY);
-					try {
-						highlighter.addHighlight(index, index + 1, painter);
-					} catch (BadLocationException e2) {
-						e2.printStackTrace();
-					}
+				if (debugger != null) {
+					/* Returns true if it's finished (set debugger to null), otherwise, continue */
+					debugger.step();
 				}
 			}
 		});
-		toolBar.add(btnNewButton);
+		toolBar.add(stepButton);
 		resetButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setStatusLabel(-1, false);
