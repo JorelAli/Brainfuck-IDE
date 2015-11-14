@@ -1,5 +1,5 @@
 # Brainfuck-IDE
-The Brainfuck IDE is a nice little working environment to practice and play around with Brainfuck.
+The Brainfuck IDE is a nice little working environment to practise and play around with Brainfuck.
 
 Usage
 -----
