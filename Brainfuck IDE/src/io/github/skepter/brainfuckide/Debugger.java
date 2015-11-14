@@ -88,8 +88,6 @@ public class Debugger {
 
 	public boolean step() {
 		index++;
-		System.out.println(index);
-		System.out.println(maxIndex);
 		if (index == maxIndex - 1) {
 			System.out.println("End of max index.");
 			return true;
@@ -219,14 +217,17 @@ public class Debugger {
 				int i = 1;
 				int indexClone = index;
 				while (i > 0) {
-					while (workspace.getText().charAt(indexClone) == ' ' || workspace.getText().charAt(indexClone) == '\n') {
-						indexClone--;
+					if (indexClone >= 0) {
+						while (workspace.getText().charAt(indexClone) == ' ' || workspace.getText().charAt(indexClone) == '\n') {
+							indexClone--;
+						}
+
+						char c2 = chars[--indexClone];
+						if (c2 == Token.BRACKET_LEFT)
+							i--;
+						else if (c2 == Token.BRACKET_RIGHT)
+							i++;
 					}
-					char c2 = chars[indexClone];
-					if (c2 == Token.BRACKET_LEFT)
-						i--;
-					else if (c2 == Token.BRACKET_RIGHT)
-						i++;
 				}
 				charPointer--;
 				break;
