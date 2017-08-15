@@ -9,14 +9,14 @@ The IDE has 4 compartments.
 * Top right = Controls
 * Bottom right = Memory
  
-####The workspace
+#### The workspace
 The workspace is where you enter the Brainfuck code.
 Ook! is supported in version 3.0 onwards
 
-####Output
+#### Output
 Pressing the Run! button executes the Brainfuck code. Any comments that are not written in Brainfuck will not be parsed. The output will be printed here.
 
-####Controls
+#### Controls
 Pretty self explanatory, the controls control the ins and outs of the IDE
 * Run! - Runs the code
 * Stop - Stops any running code (e.g. code awaiting a character input)
@@ -32,7 +32,7 @@ Pretty self explanatory, the controls control the ins and outs of the IDE
   * 32 bits (0 to 4294967295)
 * Character code finder - Finds the decimal ASCII code for that certain character
 
-####Memory
+#### Memory
 This shows the cells and the data inside each cell. The pointer is highlighted (version 3.0 onwards), or shown in the status bar at the bottom of the application
 
 Downloads
