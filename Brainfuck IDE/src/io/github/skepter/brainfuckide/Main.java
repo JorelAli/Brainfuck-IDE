@@ -49,6 +49,13 @@ import javax.swing.text.Element;
 import javax.swing.text.Highlighter;
 import javax.swing.text.Highlighter.HighlightPainter;
 
+import org.pushingpixels.flamingo.api.ribbon.AbstractRibbonBand;
+import org.pushingpixels.flamingo.api.ribbon.JRibbon;
+import org.pushingpixels.flamingo.api.ribbon.RibbonContextualTaskGroup;
+import org.pushingpixels.flamingo.api.ribbon.RibbonTask;
+import org.pushingpixels.flamingo.internal.ui.ribbon.AbstractBandControlPanel;
+import org.pushingpixels.substance.api.skin.SubstanceTwilightLookAndFeel;
+
 /**
  * Brainfuck IDE designed to run and debug Brainfuck code Extra credit to
  * FabianM for BrainfuckEngine.java https://github.com/fabianm
@@ -92,14 +99,19 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (final Exception e) {
-		}
+		
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					
+					try {
+						UIManager.setLookAndFeel(new SubstanceTwilightLookAndFeel());
+						//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
+					
 					Main window = new Main();
 					window.mainFrame.setVisible(true);
 				} catch (Exception e) {
@@ -144,6 +156,24 @@ public class Main {
 		mainFrame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		mainPanel.setLayout(new BorderLayout(0, 0));
 
+		JRibbon ribbon = new JRibbon();
+//		ribbon.addContextualTaskGroup(new RibbonContextualTaskGroup("", Color.CYAN, new RibbonTask("taskName", new AbstractRibbonBand<AbstractBandControlPanel>("thingy", null, is, null) {
+//
+//			/**
+//			 * 
+//			 */
+//			private static final long serialVersionUID = 1L;
+//
+//			@Override
+//			public AbstractRibbonBand<AbstractBandControlPanel> cloneBand() {
+//				// TODO Auto-generated method stub
+//				return null;
+//			}
+//			
+//		})));
+		
+		mainPanel.add(ribbon, BorderLayout.NORTH);
+		
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		mainPanel.add(toolBar, BorderLayout.NORTH);
