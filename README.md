@@ -38,3 +38,7 @@ This shows the cells and the data inside each cell. The pointer is highlighted (
 Downloads
 ---------
 Download the latest release [here](https://github.com/Skepter/Brainfuck-IDE/releases)
+
+## Screenshots
+
+![screenshot](https://raw.githubusercontent.com/JorelAli/Brainfuck-IDE/master/Images/Version%202.1%20workspace%20with%20output.PNG)
